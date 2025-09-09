@@ -1,0 +1,134 @@
+// تكملة الأنماط
+.filters-container {
+  .filter-group {
+    @apply border-b border-gray-200 pb-4;
+
+    &:last-child {
+      @apply border-b-0;
+    }
+
+    h4 {
+      @apply cursor-pointer select-none;
+
+      &:after {
+        content: "\e92a"; // sicon-keyboard_arrow_down
+        font-family: "sallaicons";
+        @apply float-left transition-transform duration-200;
+      }
+
+      &.collapsed:after {
+        @apply transform -rotate-90;
+      }
+    }
+  }
+
+  .brand-filter-list {
+    max-height: 200px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-gray-300 rounded;
+    }
+  }
+}
+
+// Bought Together Section
+.bought-together-section {
+  .product-combo-item {
+    @apply relative;
+
+    .combo-check {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    input:not(:checked) ~ div .combo-check {
+      display: none;
+    }
+
+    img {
+      @apply border-2 border-gray-200;
+
+      input:checked ~ div & {
+        @apply border-primary;
+      }
+    }
+  }
+
+  .combo-total {
+    @apply text-center bg-gray-100 rounded-lg p-4;
+  }
+}
+
+// Enhanced Product Grid
+.view-toggle {
+  @apply bg-gray-100 rounded-lg overflow-hidden;
+
+  button {
+    @apply px-3 py-1 text-gray-600 transition;
+
+    &.active {
+      @apply bg-primary text-white;
+    }
+  }
+}
+
+// List View for Products
+.s-products-list.list-view {
+  @apply grid-cols-1 gap-4;
+
+  .product-entry {
+    @apply bg-white rounded-lg shadow-sm p-4 grid grid-cols-12 gap-4;
+
+    .product-image {
+      @apply col-span-3 md:col-span-2;
+    }
+
+    .product-content {
+      @apply col-span-9 md:col-span-10;
+
+      .product-title {
+        @apply text-lg mb-2;
+      }
+
+      .product-description {
+        @apply text-gray-600 text-sm mb-3 line-clamp-2;
+      }
+
+      .product-footer {
+        @apply flex items-center justify-between;
+      }
+    }
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  .hero-with-categories {
+    .categories-sidebar {
+      @apply hidden;
+    }
+  }
+
+  .quick-categories {
+    .category-card {
+      span {
+        @apply text-xs;
+      }
+    }
+  }
+
+  .bought-together-wrapper {
+    .product-combo-item img {
+      @apply w-16 h-16;
+    }
+
+    .sicon-add,
+    .sicon-equal {
+      @apply text-lg;
+    }
+  }
+}

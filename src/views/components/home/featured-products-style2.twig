@@ -1,0 +1,60 @@
+{#
+| Variable                      | Type      | Description                                                         |
+|-------------------------------|-----------|---------------------------------------------------------------------|
+| items                         | array     | shared variable in all layout, index.twig, and all components views |
+| items[].title                 | string    | Section title                                                       |
+| items[].name                  | string    | Alias for title                                                     |
+| items[].type                  | string    | category,most_sales,latest_products,chosen_products                 |
+| items[].featured_product      | Product   |                                                                     |
+| items[].special_product.id    | string    | Product string id                                                   |
+| items[].special_product.title | string    | Product Name                                                        |
+| items[].products.source       | string    |                                                                     |
+| items[].products.source_value | ?int[]    | ids of sources (product_ids, categories_ids, brands_id..etc)        |
+| items[].products.limit        | int       | Number of products to be shown                                      |
+| items[].limit                 | Int       | Number of products to be shown                                      |
+| items[].id                    | String    | Section id                                                          |
+| postion                       | int       | Sorting number starts from zero                                     |
+| is_slider                     | Bool      | Products should be movable or static                                |
+#}
+{% set component_id='featured-products-style2-' ~ position %}
+{% set is_vertical = theme.settings.get('vertical_fixed_products', true) %}
+<section class="s-block s-block-tabs s-block--tabs-produtcs s-block--full-bg {{ is_slider ? 'as-slider':'as-grid' }} bg-gray-100 py-8 sm:py-16" id="{{ component_id }}">
+  <div class="container">
+
+      <div class="tabs hide-scroll">
+          {% for section in items %}
+              <salla-button 
+                class="tab-trigger {{ loop.first?'is-active':'' }}"
+                data-target="{{ component_id }}-{{ section.id }}"
+                data-component-id="{{ component_id }}"
+                fill="outline">
+                  {{ section.title }}
+              </salla-button>
+          {% endfor %}
+      </div>
+
+      <div class="tabs-wrapper">
+        {% for section in items %}
+            <div id="{{ component_id }}-{{ section.id }}" class="tabs__item {{ loop.first?'is-active':'' }}">
+                {% if is_slider %}
+                    <salla-products-slider 
+                      slider-id="section-{{ section.id }}-slider" 
+                      source="{{ section.products.source }}"
+                      limit="{{ section.products.limit }}"
+                      source-value="{{ section.products.source_value|json_encode }}"
+                      >
+                    </salla-products-slider>
+                {% else %}
+                    <salla-products-list  
+                      source="{{ section.products.source }}"
+                      limit="{{ section.products.limit }}"
+                      source-value="{{ section.products.source_value|json_encode }}"
+                      {{is_vertical ? '' : 'horizontal-cards'}}
+                      >
+                    </salla-products-list>
+                {% endif %}
+            </div>
+        {% endfor %}
+      </div>
+  </div>
+</section> 

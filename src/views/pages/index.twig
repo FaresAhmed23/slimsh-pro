@@ -1,0 +1,120 @@
+{% extends "layouts.master" %}
+{% block content %}
+    
+    {# Hero Section with Categories Sidebar #}
+    <section class="hero-with-categories mb-8">
+        <div class="container">
+            <div class="grid grid-cols-12 gap-4">
+                {# Categories Sidebar #}
+                <div class="col-span-3 hidden lg:block">
+                    <div class="categories-sidebar bg-white rounded-lg shadow-sm p-4">
+                        <h3 class="font-bold mb-4 text-gray-800">الأقسام الرئيسية</h3>
+                        <nav class="space-y-1">
+                            {% for category in main_categories[:8] %}
+                                <a href="{{ category.url }}" 
+                                   class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-md transition group">
+                                    <span class="flex items-center">
+                                        {% if category.icon %}
+                                            <i class="{{ category.icon }} ml-3 text-gray-600 group-hover:text-primary"></i>
+                                        {% endif %}
+                                        <span class="text-gray-700 group-hover:text-primary">{{ category.name }}</span>
+                                    </span>
+                                    <i class="sicon-keyboard_arrow_left text-gray-400"></i>
+                                </a>
+                            {% endfor %}
+                        </nav>
+                    </div>
+                </div>
+                
+                {# Main Slider #}
+                <div class="col-span-12 lg:col-span-9">
+                    {% component 'home.slider' %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Quick Categories Grid #}
+    <section class="quick-categories mb-12">
+        <div class="container">
+            <h2 class="text-2xl font-bold mb-6">تسوق حسب القسم</h2>
+            <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                {% for category in main_categories[:16] %}
+                    <a href="{{ category.url }}" 
+                       class="category-card text-center group">
+                        <div class="bg-gray-100 rounded-lg p-4 mb-2 group-hover:bg-primary-50 transition">
+                            {% if category.image %}
+                                <img src="{{ category.image }}" 
+                                     alt="{{ category.name }}" 
+                                     class="w-16 h-16 mx-auto object-contain">
+                            {% else %}
+                                <i class="sicon-category text-4xl text-gray-400 group-hover:text-primary"></i>
+                            {% endif %}
+                        </div>
+                                                <span class="text-sm text-gray-700 group-hover:text-primary">{{ category.name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# Flash Deals / Today's Deals #}
+    <section class="todays-deals mb-12 bg-red-50 py-8">
+        <div class="container">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold flex items-center">
+                    <i class="sicon-flash text-red-500 ml-2"></i>
+                    عروض اليوم
+                </h2>
+                <a href="{{ link('offers') }}" class="text-primary font-semibold">
+                    عرض الكل <i class="sicon-keyboard_arrow_left"></i>
+                </a>
+            </div>
+            {% component 'home.featured-products' with {type: 'offers'} %}
+        </div>
+    </section>
+
+    {# Recently Viewed Section #}
+    <section class="recently-viewed-section mb-12 hidden">
+        <div class="container">
+            <h2 class="text-2xl font-bold mb-6">شاهدتها مؤخراً</h2>
+            <div class="swiper recently-viewed-slider">
+                <div class="swiper-wrapper recently-viewed-products">
+                    {# Products will be inserted here by JavaScript #}
+                </div>
+                <div class="swiper-button-prev recently-viewed-prev"></div>
+                <div class="swiper-button-next recently-viewed-next"></div>
+            </div>
+        </div>
+    </section>
+
+    {# Shop by Brand #}
+    <section class="shop-by-brand mb-12">
+        <div class="container">
+            <h2 class="text-2xl font-bold mb-6">تسوق حسب الماركة</h2>
+            <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                {% for brand in brands[:16] %}
+                    <a href="{{ brand.url }}" 
+                       class="brand-card bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition text-center">
+                        {% if brand.logo %}
+                            <img src="{{ brand.logo }}" alt="{{ brand.name }}" class="w-20 h-20 object-contain mx-auto">
+                        {% else %}
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                                <span class="text-gray-500 text-sm">{{ brand.name[:2] }}</span>
+                            </div>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# Original Home Components #}
+    {% component 'home' %}
+    
+{% endblock %}
+
+{% block scripts %}
+    <script defer src="{{ 'home.js' | asset }}"></script>
+    <script defer src="{{ 'recently-viewed.js' | asset }}"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+.sf-dump {
+  direction: ltr;
+}
+
+[dir="ltr"] {
+  .with-arrow .sicon-keyboard_arrow_left:before,
+  nav .sicon-keyboard_arrow_left:before,
+  .sub-menu .has-children > a:after {
+      content: "\e96c";
+  }
+  .flatpickr {
+    &-months {
+      .numInputWrapper {
+        .cur-year {
+          padding: 0 0 0 15px;
+        }
+      }
+      [class^="arrow"] {
+        right: unset;
+        left: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{#
+| Variable              | Type      | Description                                                      |
+|-----------------------|-----------|------------------------------------------------------------------|
+| products.source       | string    |                                                                  |
+| products.source_value | ?int[]    | ids of sources (product_ids, categories_ids, brands_id..etc)     |
+| title                 | string    | Section title                                                    |
+| display_all_url       | ?string   | If it's existed, mean should show load more link to this url     |
+| position              | Int       | Sorting number start from zero                                   |
+| limit                 | int       | Number of products to be shown                                   |
+#}
+{% set is_vertical = theme.settings.get('vertical_fixed_products', true) %}
+<section class="s-block container">
+    {% if title %}
+      <div class="s-block__title">
+        <div class="right-side">
+          <h2>{{ title }}</h2>
+          {# <p>عنوان فرعي توصيفي صغير</p> #}
+        </div>
+        {% if display_all_url %}
+            <a href="{{ display_all_url }}" class="s-block__display-all">{{ trans('blocks.home.display_all') }} <i class="sicon-arrow-left"></i></a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <salla-products-list
+      source="{{ products.source }}"
+      limit="{{ limit }}"
+      source-value="{{ products.source_value|json_encode }}"
+      class="{{is_vertical ? 'vertical-products' : 'horizontal-products'}}"
+      {{is_vertical ? '' : 'horizontal-cards'}}
+      >
+    </salla-products-list>
+</section>
+
+

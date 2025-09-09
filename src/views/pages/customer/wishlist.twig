@@ -1,0 +1,21 @@
+{#
+| Variable   | Type                 | Description |
+|------------|----------------------|-------------|
+| page       | object               |             |
+| page.title | string               |             |
+| page.slug  | string               |             |
+#}
+{% extends "layouts.customer" %}
+{% block head_scripts %}
+	<script defer data-cfasync="false" src="{{ 'wishlist-card.js'|asset }}"></script>
+{% endblock %}
+
+{% block inner_content %}
+	<div class="space-y-5" id="wishlist">
+		{% hook 'customer:wishlist.items.start' %}
+		<salla-products-list source="wishlist" row-cards product-card-component="custom-wishlist-card"></salla-products-list>
+		{% hook 'customer:wishlist.items.end' %}
+	</div>
+{% endblock %}
+
+ 

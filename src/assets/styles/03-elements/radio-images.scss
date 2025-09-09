@@ -1,0 +1,76 @@
+.radio-images {
+  &__label{
+    @apply inline-block mb-0.5 cursor-pointer rounded-md overflow-hidden h-24 md:h-20 w-full;
+  }
+
+  &__badge{
+    @apply block absolute bottom-10 left-1/2 -translate-x-1/2 rounded-full px-1.5 bg-red-400 text-white whitespace-nowrap;
+  }
+
+  input[type="radio"] {
+    display: none;
+
+    + label {
+      position: relative;
+
+      &:after {
+        content: "\ea9d";
+        font-family: "sallaicons" !important;
+        speak: never;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: white;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        // color: ;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.4);
+        transition: transform .3s;
+      }
+
+      &:before {
+        content: '';
+        background-color: #000;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transition: opacity .3s;
+      }
+    }
+
+    &:checked {
+      + label {
+        &:after {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+
+        &:before {
+          opacity: .3;
+        }
+      }
+    }
+
+    &:disabled {
+      + label {
+        opacity: .45;
+      }
+    }
+  }
+}

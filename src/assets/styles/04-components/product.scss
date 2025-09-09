@@ -1,0 +1,406 @@
+  
+// Wishlist Product entry
+.product-entry {
+  @apply h-full transition-shadow duration-300 bg-white hover:shadow-default rounded-lg justify-between flex relative;
+
+  &--wishlist {
+    @apply justify-between p-4 flex-col sm:flex-row;
+
+    .product-entry__image {
+      @apply overflow-hidden w-16 h-12 md:w-20 md:h-16 rounded-md;
+    }
+
+    salla-button{
+      @apply flex;
+    }
+  }
+}
+
+.s-comments {
+  &-page {
+    @apply pt-16;
+  }
+
+  &-product {
+    @apply bg-gray-100 mb-4 md:mb-14 py-4 md:py-14;
+
+    .s-comments-container {
+      @apply container;
+    }
+  }
+}
+
+// share list
+.share-btns-list{
+  @apply absolute z-10 overflow-hidden opacity-0 top-12 bg-white flex items-center flex-col shadow-huge rounded-3xl;
+
+  a{
+    @apply block p-3 hover:text-primary;
+  }
+}
+
+
+// cart
+.cart-item{
+  salla-conditional-fields > section{
+    @apply px-0 pt-0 last:mb-0 last:pb-0;
+  }
+}
+
+// Digital Rating(SVG)---------------------------
+.s-product-card-content-pie-svg-base{ 
+  transition: stroke-dashoffset 1s linear;
+  stroke: #E8EDF2;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.s-product-card-content-pie-svg-bar{
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+}
+
+.s-product-card{
+    &-content-sub{
+      @apply justify-start gap-3;
+    }
+
+    &-starting-price{
+      @apply w-auto;
+  } 
+  }
+
+.pie-wrapper {
+  @apply w-[72px] h-[72px] absolute top-2.5 rtl:left-5 ltr:right-5 text-primary flex items-center justify-center;
+
+  .pie-svg {
+    circle {
+      transition: stroke-dashoffset 1s linear;
+      stroke: #E8EDF2;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      fill: none;
+
+      &.circle_bar {
+        stroke: var(--color-primary);
+        stroke-dasharray: 100 100;
+        stroke-dashoffset: 100;
+      }
+    }
+  }
+
+  span {
+      display: block;
+      font-size: var(--font-xsm);
+      color: var(--color-text);
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      line-height: 1;
+      font-size: var(--font-xsm);
+
+      b {
+          font-size: var(--font-md) !important;
+          margin-bottom: 3px;
+          color: var(--color-primary);
+      }
+  }
+
+}
+
+/* Add to cart sticky bar */
+@media (max-width: 640px) {
+  .is-sticky-product-bar{
+    &.product-single{
+      @apply pb-28;
+    }
+
+    .sticky-product-bar{
+      @apply flex flex-wrap flex-col gap-2.5 sm:gap-4 fixed z-[2] bottom-0 left-0 p-3 w-full justify-between items-center shadow-[-1px_-2px_9px_0_rgba(0,0,0,0.05)] transition duration-700 delay-500 translate-y-100 opacity-0 ease-elastic;
+
+      &__quantity,
+      salla-add-product-button{
+        @apply translate-y-5 opacity-0 transition duration-700 ease-elastic w-full;
+      }
+
+      &__price,
+      .form-label{
+        @apply hidden;
+      }
+
+      &__quantity{
+        salla-quantity-input{
+          @apply w-full;
+          .s-quantity-input-container{
+            @apply w-full;
+          }
+          .s-quantity-input-input{
+            @apply w-[80%]
+          }
+        }
+        @apply m-0 delay-[900ms];
+      }
+
+      salla-add-product-button{
+        @apply w-auto m-0 flex-1 delay-1000;
+      }
+
+      .hydrated &{
+        &,
+        &__quantity,
+        salla-add-product-button{
+          @apply translate-y-0 opacity-100;
+        }
+      }
+    }
+  }
+}
+
+// Tabs fix
+.s-tabs-header * {
+  pointer-events: auto !important;
+}
+.product__description {
+  ul,
+  li{
+    list-style: inherit !important;
+  }
+
+  ul,
+  ol {
+    @apply px-6;
+  }
+
+  ol{
+    list-style: auto !important;
+  }
+
+  a{
+    @apply text-blue-700;
+  }
+}
+
+
+
+// 3d Image Viewer ------------------------------
+.model-viewer-wrapper {
+  @apply relative mb-4 md:mb-0 w-full;
+}
+
+.switcher-3d-view {
+  @apply absolute top-5 rtl:left-4 ltr:right-4;
+
+  // .has-calories-badge &{
+  //   @apply top-auto bottom-5;
+  // }
+}
+
+.model-viewer {
+  @apply w-full h-full;
+
+  &__poster {
+    @apply absolute inset-0 bg-contain bg-no-repeat bg-center;
+  }
+}
+
+.s-toggle .s-toggle-switcher-has-text:before {
+  @apply content-[attr(data-switcher-text)] font-bold text-center text-gray-400 text-xs leading-[22px];
+  font-family: arial, serif;
+}
+
+.s-toggle .s-toggle-input:checked+div.s-toggle-switcher-bg-white:before {
+  @apply text-gray-600 border-white bg-white;
+}
+
+// product options file upload component
+.product-option-uploader{
+  .s-file-upload-wrapper{
+    min-height: 120px;
+    .filepond--list-scroller{
+      overflow-y: inherit !important;
+    }
+    .filepond--drop-label {
+      min-height: 120px !important;
+      @apply bg-white cursor-pointer border-dashed rounded-md border border-gray-200;
+    }
+    .product-option-uploader-placholder{
+      @apply flex flex-col justify-center items-center;
+      &-icon {
+        @apply mb-1;
+        i {
+          color: #7c8082;
+          @apply text-xl;
+        }
+      }
+    }
+
+  }
+}
+
+// centered offer modal width fix
+@media (max-width: 640px) {
+  .s-offer-modal-slider-centered .s-offer-modal-slider-item {
+    max-width: 46% !important;
+  }
+}
+
+.s-product{
+    &-card{
+      &-full-image salla-add-product-button {
+        @apply bg-white rounded;
+      }
+    
+      &-wishlist-added i {
+        @apply text-red-500
+      }
+      &-fit-height.s-product-card-vertical .s-product-card-image {
+        @apply flex-none sm:flex-1;
+      }
+    }
+    
+    &-options-colors-wrapper{
+      @apply flex flex-wrap gap-4;
+      
+      .s-product-options-colors-item{
+        @apply m-0 rtl:m-0 ltr:m-0 w-auto;
+    }
+  }
+}
+
+// Minimal card
+.s-product-card-minimal .s-product-card-image{
+  @apply rtl:rounded-r ltr:rounded-l;
+}
+
+.s-product-card-starting-price{
+  @apply justify-start gap-2.5;
+
+  h4{
+    @apply text-red-800;
+  }
+}
+
+.s-product-card-minimal salla-button.s-product-card-wishlist-btn{
+  @apply rtl:left-2.5 ltr:right-2.5 top-2.5;
+}
+
+// image zooming
+.magnify-wrapper {
+	.img-magnifier-glass {
+	  @apply hidden sm:block;
+	  position: absolute;
+	  z-index: 3;
+	  border-radius: 50%;
+	  cursor: none;
+	  /*Set the size of the magnifier glass:*/
+	  width: 300px;
+	  height: 300px;
+	  opacity:0;
+	  pointer-events:none;
+	  transform: scale(0);
+	  transition: transform .5s ease;
+	  box-shadow: inset 0px 0px 30px #949494;
+	}
+	&:hover{
+	  .img-magnifier-glass{
+		opacity:1;
+		pointer-events:initial;
+		transform: scale(1);
+		transition-delay: 0.3s;
+	  }
+	} 
+}
+
+
+// Horizontal card
+.s-product-card-horizontal{
+  .s-product-card-content{
+    @apply mb-0;
+  }
+
+  @media(max-width: 480px){
+    salla-button.s-product-card-wishlist-btn{
+      @apply absolute bottom-2.5 rtl:-right-12 ltr:-left-12
+    }
+  }
+
+  salla-progress-bar{
+    @apply flex flex-col grow;
+  }
+}
+
+.s-rating-stars-reviews {
+	@apply text-gray-500
+}
+
+.s-product-card-promotion-title{
+  @apply bg-red-800 text-white;
+}
+
+.s-product-card-sale-price {
+  h4{
+    @apply text-red-800 #{!important};
+  }
+
+  span{
+    @apply text-inherit;
+  }
+}
+
+// filters
+@media (max-width: 1024px){
+  salla-filters{
+    &,
+    > *{
+      @apply px-5 #{!important};
+    }
+  }
+}
+
+// bank offer corner badge
+#offer-corner-badge{
+  @apply float-left absolute bg-red-600 text-white transform rtl:-rotate-45 ltr:rotate-45 px-12 py-1 h-auto w-auto border-0 m-0 z-1 rtl:top-3 ltr:top-5 rtl:-left-12 ltr:-right-14;
+}
+
+// cart options
+.cart-options {
+  @apply bg-white border-dashed border border-gray-400 rounded-md;
+  salla-product-options {
+    @apply mb-0 pt-0;
+  
+    .s-product-options-option:not(div.s-product-options-option-booking) {
+      @apply block #{!important};
+    }
+      &-label {
+        @apply mb-3;
+      }
+
+      .s-form-control {
+        @apply rounded-md border-gray-200
+      }
+
+      .s-datetime-picker-input {
+        @apply rounded-md border-gray-200
+      }
+
+      .s-product-options-multiple-options-wrapper {
+        @apply block #{!important};
+      
+    }
+  }
+}
+
+salla-quantity-input[max='1']{
+  input {
+    @apply pointer-events-none opacity-50;
+  }
+
+  .s-quantity-input-button {
+    @apply cursor-not-allowed
+  }
+}

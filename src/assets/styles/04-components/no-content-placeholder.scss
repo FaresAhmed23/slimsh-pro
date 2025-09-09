@@ -1,0 +1,11 @@
+.no-content-placeholder{
+    @apply h-full text-gray-400 pt-10 pb-20 flex items-center flex-col justify-center;
+
+    .icon{
+      @apply text-5xl mb-4 w-32 h-32 flex justify-center items-center rounded-full bg-gray-100 text-gray-300;
+    }
+
+    p{
+      @apply text-base text-gray-500 mb-4;
+    }
+}

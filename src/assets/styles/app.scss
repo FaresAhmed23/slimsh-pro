@@ -1,0 +1,96 @@
+/*
+ * IMPORTANT NOTE: Theme based on Tailwindcss but for the purpose of simplifing the DOM we use
+ * tailwind classes with @apply directive in the SCSS files
+*/
+
+/**
+ * SETTINGS
+ * Tailwind.............Import tailwind.
+ * Fonts................Any font files.
+ * Global...............Project-specific, globally available variables.
+ * Breakpoints..........Mixins and variables for responsive styles.
+ *
+ * GENERIC
+ * Common...............All commn styles and assistan classes and common style fixes
+ * Reset................Reset specific elements to make them easier to style in other contexts.
+ * Animations...........Some of animations from anime.css
+ * Lazyload.............Lazyload placeholder styles
+ * RTL..................Specific styles for RTL.
+ * LTR..................Specific styles for LTR.
+ *
+ * ELEMENTS
+ * Forms................Element-level form styling.
+ * Buttons..............Specific styles for buttons.
+ * Radio................Specific styles for custom radio button.
+ * Radio Images.........Specific styles for radio images, used in product options.
+ *
+ * COMPONENTS
+ * Header...............Specific styles for header styles.
+ * Footer...............Specific styles for footer styles.
+ * Menu.................Specific styles for main menu and mobile menu styles.
+ * User Menu............Specific styles for user menu dropdown.
+ * User Pages...........Specific styles for user pages like profile, notifications, orders...
+ * Home Blocks..........Specific styles for home blocks.
+ * Slider...............Specific styles for sliders.
+ * Product..............Specific styles for single product page and it's elements.
+ * Brands...............Specific styles for brands page.
+ * Placeholder..........Specific styles for no content placeholders.
+ * Gifting..............Specific styles for gifting system.
+ * Loyalty..............Specific styles for loyalty system.
+ *
+ * UTILITIES
+ * Chat Bots............Specific styles for chats bots widget.
+ * Swal.................Specific styles for Sweet Alert addon.
+ * Safari Fixes.........Specific styles for Safari Browser.
+ *
+ * EMBEDED ADDONS
+ * Lite Youtube Embed...Specific styles for lite-youtube-embed addon.
+ * Swiper...............Specific styles for swiper slider addon.
+ * MMenu................Specific styles for mmenu addon.
+ *
+*/
+
+@import "./01-settings/tailwind";
+@import "./01-settings/fonts";
+@import "./01-settings/global";
+@import "./01-settings/breakpoints";
+
+@import "./02-generic/reset";
+@import "./02-generic/common";
+@import "./02-generic/tooltip";
+@import "./02-generic/animations";
+@import "./02-generic/lazyload";
+@import "./02-generic/rtl";
+@import "./02-generic/ltr";
+@import "./02-generic/mixins";
+
+@import "./03-elements/form";
+@import "./03-elements/buttons";
+@import "./03-elements/radio";
+@import "./03-elements/radio-images";
+
+@import "./04-components/header";
+@import "./04-components/footer";
+@import "./04-components/menus";
+@import "./04-components/user-menu";
+@import "./04-components/user-pages";
+@import "./04-components/home-blocks";
+@import "./04-components/slider";
+@import "./04-components/product";
+@import "./04-components/brands";
+@import "./04-components/no-content-placeholder";
+@import "./04-components/gifting";
+@import "./04-components/loyalty";
+@import "./04-components/virtooal";
+@import "./04-components/landing-page";
+@import "./04-components/filters";
+
+@import "./05-utilities/chat-bots";
+@import "./05-utilities/swal";
+@import "./05-utilities/safari-fixes";
+@import "./05-utilities/font-customization";
+
+@import "lite-youtube-embed/src/lite-yt-embed.css";
+@import "mmenu-light/dist/mmenu-light.css";
+@import "./04-components/homepage";
+@import "./02-layouts/main";

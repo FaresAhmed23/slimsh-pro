@@ -1,0 +1,217 @@
+/*
+* Buttons
+*/
+salla-button {
+  &[width="wide"] {
+    @apply w-full;
+  }
+
+  &.copied {
+    .s-button-text{
+      @apply text-green-600;
+    }
+
+    i:before {
+      content: '\ea9d';
+      @apply text-green-600;
+    }
+  }
+}
+
+.btn {
+  @apply transition duration-300 flex-1 inline-flex justify-center items-center px-6 pb-2.5 pt-2 text-sm font-bold rounded-md hover:opacity-80 whitespace-nowrap;
+
+  .loader {
+    width: 0;
+    opacity: 0;
+    height: 16px;
+    transform: scale(0);
+    transition: 0.3s;
+  }
+
+  &--is-loading {
+    pointer-events: none;
+
+    .loader {
+      width: 16px;
+      margin: 0 5px;
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &--delete {
+    .loader {
+      width: 15px;
+
+      &:before {
+        width: 12px;
+        height: 12px;
+        border-top-color: transparent;
+        border-bottom-color: #fff;
+        border-left-color: transparent;
+        border-right-color: #fff;
+      }
+    }
+
+    &.btn--is-loading {
+      .icon {
+        opacity: 0;
+      }
+    }
+  }
+
+  &--quantity {
+    @apply text-gray-400 w-11 hover:text-primary transition-colors duration-300;
+  }
+
+  &__text {
+    @apply transition-transform duration-500 inline-block pointer-events-none;
+  }
+
+  &--wishlist {
+    @apply m-0 rtl:mr-0.5 ltr:ml-0.5;
+
+    &:hover{
+      @apply text-gray-600;
+    }
+
+    &.is-added {
+      @apply text-red-500;
+    }
+  }
+
+  &--rounded-gray {
+    @apply inline-flex grow-0 justify-center w-full rounded-full px-3.5 py-2 items-center transition-colors bg-gray-200/50 hover:bg-gray-200/70 text-sm font-medium whitespace-nowrap;
+  }
+
+  &--circle-gray {
+    @apply inline-flex justify-center items-center rounded-full px-3 py-3 h-9 w-9 transition-colors bg-gray-200/30 hover:bg-gray-200/50 text-sm font-medium;
+  }
+
+  &--icon {
+    @apply flex items-center justify-center transition bg-white text-gray-500 border-gray-200  hover:border-gray-200 hover:text-gray-600 mx-1 border rounded-full w-10 h-10 font-medium flex-shrink-0;
+
+    i {
+      @apply pointer-events-none;
+
+      &.sicon-heart {
+        @apply text-red-400;
+      }
+    }
+  }
+
+  &--share {
+    margin: 0;
+  }
+
+  &--close {
+    @apply hidden xs:block h-12 w-14 text-red-500 text-2xl absolute top-0 rtl:left-0 ltr:right-0 z-50;
+  }
+
+  &--close-sm {
+    @apply opacity-0 -translate-y-full transition duration-300 h-[51px] w-[51px] bg-red-500 text-white text-xl fixed top-0 rtl:left-0 ltr:right-0 z-50;
+  }
+
+  &--collapse {
+    @apply w-full bg-gray-100 py-2.5 rtl:xs:pr-7 ltr:xs:pl-7 rtl:xs:pl-5 ltr:xs:pr-5 rtl:xs:pl-5 ltr:xs:pr-5 rounded-md flex items-center text-gray-700 justify-center text-sm;
+  }
+
+  /* Disabled state */
+  &.btn:disabled {
+    @apply text-gray-300 bg-transparent hover:bg-transparent shadow-sm border border-gray-200 cursor-default;
+  }
+
+  &:disabled {
+    .s-button-text {
+      @apply opacity-70;
+    }
+  }
+
+  /* Button Variants */
+  &--danger {
+    @apply bg-red-400 text-white hover:opacity-80;
+  }
+
+  &--primary {
+    @apply text-primary-reverse border border-primary bg-primary;
+  }
+
+  &--outline-primary {
+    @apply border border-primary text-primary hover:bg-primary hover:text-primary-reverse;
+  }
+
+  &--outline {
+    @apply text-gray-400 bg-white hover:bg-primary hover:text-white hover:border-primary shadow-sm border border-gray-200;
+
+    &.light {
+      @apply bg-transparent text-white border-white;
+    }
+  }
+
+  &--rounded-full {
+    @apply rounded-full;
+  }
+}
+
+.rounded-icon {
+  @apply w-16 h-16 flex justify-center items-center rounded-full text-2xl;
+}
+
+/*
+* Coupon Button
+*/
+button.btn--coupon {
+  @apply absolute top-0 rtl:left-0 ltr:right-0 rtl:rounded-r-none ltr:rounded-l-none shrink-0 h-[40px];
+
+  .s-button-text {
+    @apply flex #{!important};
+  }
+}
+
+salla-button {
+  &.has-not-coupon button .icon,
+  &.has-coupon button .coupon-text{
+    @apply hidden;
+  }
+
+  &.has-coupon button {
+    @apply w-12 px-0;
+  }
+}
+
+/*
+* Links ---------------------------------------------------
+*/
+.link {
+  &--primary {
+    @apply text-primary hover:text-primary-d transition;
+  }
+}
+
+#btn-show-more {
+  @apply transition;
+
+  &.is-expanded {
+    @apply opacity-0 pointer-events-none;
+  }
+}
+
+
+#blog-like{
+  &.liked{
+    i{
+      width: 18px;
+      height: 16px;
+      background-color: var(--color-primary); /* This will show the masked area */
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='18'%20height='16'%20viewBox='0%200%2018%2016'%20fill='none'%3E%3Cpath%20d='M1.5%206.74998H3.75V15.75H1.5C1.08579%2015.75%200.75%2015.4142%200.75%2015V7.49998C0.75%207.08577%201.08579%206.74998%201.5%206.74998ZM5.46967%205.78031L10.2701%200.979957C10.402%200.847994%2010.6109%200.833152%2010.7602%200.945119L11.3996%201.4247C11.7632%201.69734%2011.927%202.1619%2011.8148%202.60224L10.9499%205.99998H15.75C16.5784%205.99998%2017.25%206.67155%2017.25%207.49998V9.07822C17.25%209.2742%2017.2116%209.46822%2017.137%209.64935L14.8162%2015.2855C14.7005%2015.5665%2014.4266%2015.75%2014.1227%2015.75H6C5.58579%2015.75%205.25%2015.4142%205.25%2015V6.31064C5.25%206.11173%205.32902%205.92096%205.46967%205.78031Z'%20fill='%23236E4C'/%3E%3C/svg%3E");
+      mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='18'%20height='16'%20viewBox='0%200%2018%2016'%20fill='none'%3E%3Cpath%20d='M1.5%206.74998H3.75V15.75H1.5C1.08579%2015.75%200.75%2015.4142%200.75%2015V7.49998C0.75%207.08577%201.08579%206.74998%201.5%206.74998ZM5.46967%205.78031L10.2701%200.979957C10.402%200.847994%2010.6109%200.833152%2010.7602%200.945119L11.3996%201.4247C11.7632%201.69734%2011.927%202.1619%2011.8148%202.60224L10.9499%205.99998H15.75C16.5784%205.99998%2017.25%206.67155%2017.25%207.49998V9.07822C17.25%209.2742%2017.2116%209.46822%2017.137%209.64935L14.8162%2015.2855C14.7005%2015.5665%2014.4266%2015.75%2014.1227%2015.75H6C5.58579%2015.75%205.25%2015.4142%205.25%2015V6.31064C5.25%206.11173%205.32902%205.92096%205.46967%205.78031Z'%20fill='%23236E4C'/%3E%3C/svg%3E");
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      display: inline-block;
+      position: relative;
+      top: -2px;
+    }
+  }
+}

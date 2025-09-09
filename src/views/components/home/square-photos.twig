@@ -1,0 +1,34 @@
+{#
+| Variable          | Type   | Description                                                      |
+|-------------------|--------|------------------------------------------------------------------|
+| title             | string | Section title                                                    |
+| items[]           | array  | List of images                                                   |
+| items[].url       | Bool   | Should set overlay on the background or not                      |
+| items[].link_type | string | category,product,offers,page,external_link,brand                 |
+| items[].image.url | string |                                                                  |
+| items[].image.alt | string |                                                                  |
+| items[].text      | string | Visible title for the photo                                      |
+| position          | Int    | Sorting number start from zero                                   |
+#}
+<section class="s-block s-block--banners container">
+    {% if title %}
+        <div class="s-block__title">
+            <div class="right-side">
+                <h2>{{ title }}</h2>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="grid {{ items|length <= 3 ? 'one-row md:grid-cols-' ~ items|length : 'md:grid-cols-3 two-row' }} grid-flow-row gap-3 sm:gap-8">
+        {% for item in items %}
+            <a class="banner-entry square-photos {{ item.text ? 'has-overlay with-hover' : '' }}" href="{{ item.url }}" {% if item.link_type == 'external_link' %}target="_blank"{% endif %}>
+                <div class="lazy__bg lazy bg-no-repeat" data-bg="{{ item.image.url }}"
+                style="background-size: {{ theme.settings.get('squar_photo_bg_image_size', 'contain') }};"
+                ></div>
+                {% if item.text %}
+                        <h3 class="text-with-border"><span>{{ item.text }}</span></h3> 
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+</section>

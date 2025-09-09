@@ -1,0 +1,38 @@
+input[type="radio"] {
+  &.sr-only {
+    div.absolute {
+      transition: all 0.3s;
+    }
+
+    &:checked ~ div.absolute {
+      border-color: var(--color-main);
+    }
+  }
+}
+
+input[type="text"]:disabled {
+  //background: #f9f9f9;
+  color: #838383;
+}
+
+.form-label {
+  @apply block text-sm font-bold text-gray-700 mb-2.5 md:mb-0 sm:mt-px;
+}
+
+.form-input {
+  @apply w-full h-10 transition-colors duration-300 focus:ring-transparent focus:border-primary dark:focus:border-primary text-sm border-gray-200 dark:bg-gray-600 dark:border-gray-600 rounded-md;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+textarea.form-input {
+  @apply h-24;
+}
+
+.has-error {
+  @apply border-red-400 focus:border-red-500;
+}
+
+.has-success {
+  @apply border-green-500 focus:border-green-600;
+}
