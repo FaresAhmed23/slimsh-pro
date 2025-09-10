@@ -1,6 +1,6 @@
 {
-  "name": "theme-raed",
-  "version": "1.0.3",
+  "name": "slimsh",
+  "version": "1.0.4",
   "description": "Salla Theme",
   "license": "MIT",
   "repository": {
@@ -12,7 +12,7 @@
     "production": "webpack --mode production",
     "prod": "webpack --mode production",
     "development": "webpack --mode development",
-    "watch": "webpack --mode production --watch"
+    "watch": "webpack --mode development --watch"
   },
   "author": "Salla",
   "dependencies": {
