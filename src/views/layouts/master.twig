@@ -78,6 +78,13 @@
     <link rel="stylesheet" href="{{ 'app.css' | asset }}">
     <link rel="stylesheet" href="{{ theme.font.path|cdn }}"/>
     <link rel="stylesheet" href="{{ 'fonts/sallaicons.css'|cdn }}"/>
+
+    {% if app.mode == 'preview' %}
+        <!-- Force load local assets in preview mode -->
+        <link rel="stylesheet" href="http://localhost:8000/app.css?v={{ 'now'|date('U') }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ 'app.css' | asset }}">
+    {% endif %}
     
     <style>
     :root {
