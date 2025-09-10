@@ -32,6 +32,7 @@ module.exports = {
     path: public(),
     clean: true,
     chunkFilename: "[name].[contenthash].js",
+    publicPath: "http://localhost:8000/", // Add this
   },
   stats: { modules: false, assetsSort: "size", assetsSpace: 50 },
   module: {

@@ -16,7 +16,21 @@
     <link rel="stylesheet" href="{{ 'fonts/sallaicons.css'|cdn }}"/>
     
     <link rel="stylesheet" href="http://localhost:8000/app.css?v={{ 'now'|date('U') }}">
-
+    <style>
+        /* Verify this works */
+        .store-header { border: 5px solid red !important; }
+        .slimsh-style { border: 5px solid red !important; }
+    </style>
+    <script>
+    // Force replace CDN CSS with local CSS
+    document.addEventListener('DOMContentLoaded', function() {
+        const cdnLink = document.querySelector('link[href*="cdn.assets.salla.network"][href*=".css"]');
+        if (cdnLink) {
+            console.log('Replacing CDN CSS with local CSS');
+            cdnLink.href = 'http://localhost:8000/app.css?' + Date.now();
+        }
+    });
+</script>
     
     <style>
         :root {
