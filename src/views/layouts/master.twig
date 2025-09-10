@@ -80,14 +80,26 @@
     <link rel="stylesheet" href="{{ 'fonts/sallaicons.css'|cdn }}"/>
     
     <style>
-        :root {
-            --font-main: '{{theme.font.name}}';
-            --color-primary: {{ theme.color.primary }};
-            --color-primary-dark: {{ theme.color.darker(0.15) }};
-            --color-primary-light: {{ theme.color.lighter(0.15) }};
-            --color-primary-reverse: {{ theme.color.reverse_text }};
-        }
-    </style>
+    :root {
+        --font-main: '{{theme.font.name}}';
+        --color-primary: {{ theme.color.primary }};
+        --color-primary-dark: {{ theme.color.darker(0.15) }};
+        --color-primary-light: {{ theme.color.lighter(0.15) }};
+        --color-primary-reverse: {{ theme.color.reverse_text }};
+        
+        /* Extract RGB values for opacity variations */
+        {% set primary_rgb = theme.color.primary|replace({'#': ''})|split('', 2) %}
+        {% if primary_rgb|length == 3 %}
+            {% set r = ('0x' ~ primary_rgb[0])|number_format %}
+            {% set g = ('0x' ~ primary_rgb[1])|number_format %}
+            {% set b = ('0x' ~ primary_rgb[2])|number_format %}
+            --color-primary-rgb: {{ r }}, {{ g }}, {{ b }};
+        {% else %}
+            /* Fallback RGB values */
+            --color-primary-rgb: 59, 130, 246;
+        {% endif %}
+    }
+</style>
     {# tracking services, custom css feature. #}
     {% hook 'head:end' %}
 </head>

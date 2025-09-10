@@ -7,51 +7,57 @@
             <div class="grid grid-cols-12 gap-4">
                 {# Categories Sidebar #}
                 <div class="col-span-3 hidden lg:block">
-                    <div class="categories-sidebar bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="font-bold mb-4 text-gray-800">الأقسام الرئيسية</h3>
-                        <nav class="space-y-1">
-                            {% for category in main_categories[:8] %}
+                    <div class="categories-sidebar bg-white rounded-lg shadow-sm p-0">
+                        <h3 class="font-bold p-4 pb-2 text-gray-800 border-b">الأقسام الرئيسية</h3>
+                        <nav class="p-2">
+                            {% for category in store.categories.roots().limit(12) %}
                                 <a href="{{ category.url }}" 
-                                   class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-md transition group">
+                                   class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-md transition group">
                                     <span class="flex items-center">
                                         {% if category.icon %}
-                                            <i class="{{ category.icon }} ml-3 text-gray-600 group-hover:text-primary"></i>
+                                            <i class="{{ category.icon }} ml-3 text-gray-600 group-hover:text-primary text-lg"></i>
+                                        {% else %}
+                                            <i class="sicon-category ml-3 text-gray-600 group-hover:text-primary text-lg"></i>
                                         {% endif %}
-                                        <span class="text-gray-700 group-hover:text-primary">{{ category.name }}</span>
+                                        <span class="text-gray-700 group-hover:text-primary font-medium">{{ category.name }}</span>
                                     </span>
-                                    <i class="sicon-keyboard_arrow_left text-gray-400"></i>
+                                    <i class="sicon-keyboard_arrow_left text-gray-400 group-hover:text-primary"></i>
                                 </a>
                             {% endfor %}
+                            <a href="{{ link('categories') }}" 
+                               class="flex items-center justify-center mt-2 p-3 text-primary font-semibold hover:bg-primary/5 rounded-md">
+                                عرض جميع الأقسام
+                            </a>
                         </nav>
                     </div>
                 </div>
                 
                 {# Main Slider #}
                 <div class="col-span-12 lg:col-span-9">
-                    {% component 'home.slider' %}
+                    {% component 'home.enhanced-slider' %}
                 </div>
             </div>
         </div>
     </section>
 
-    {# Quick Categories Grid #}
+    {# Quick Categories Grid - Mobile & Desktop #}
     <section class="quick-categories mb-12">
         <div class="container">
             <h2 class="text-2xl font-bold mb-6">تسوق حسب القسم</h2>
-            <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                {% for category in main_categories[:16] %}
+            <div class="category-grid">
+                {% for category in store.categories.roots().limit(18) %}
                     <a href="{{ category.url }}" 
-                       class="category-card text-center group">
-                        <div class="bg-gray-100 rounded-lg p-4 mb-2 group-hover:bg-primary-50 transition">
+                       class="category-card text-center group bg-white rounded-lg p-4 hover:shadow-md transition-all">
+                        <div class="bg-gray-50 rounded-lg p-4 mb-3 group-hover:bg-primary/5 transition">
                             {% if category.image %}
                                 <img src="{{ category.image }}" 
                                      alt="{{ category.name }}" 
                                      class="w-16 h-16 mx-auto object-contain">
                             {% else %}
-                                <i class="sicon-category text-4xl text-gray-400 group-hover:text-primary"></i>
+                                <i class="sicon-category text-4xl text-gray-400 group-hover:text-primary block"></i>
                             {% endif %}
                         </div>
-                                                <span class="text-sm text-gray-700 group-hover:text-primary">{{ category.name }}</span>
+                        <span class="text-sm text-gray-700 group-hover:text-primary font-medium">{{ category.name }}</span>
                     </a>
                 {% endfor %}
             </div>
@@ -59,52 +65,100 @@
     </section>
 
     {# Flash Deals / Today's Deals #}
-    <section class="todays-deals mb-12 bg-red-50 py-8">
+    <section class="todays-deals mb-12 bg-gradient-to-r from-red-50 to-orange-50 py-8">
         <div class="container">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-bold flex items-center">
-                    <i class="sicon-flash text-red-500 ml-2"></i>
+                    <i class="sicon-flash-on text-red-500 ml-2 text-3xl animate-pulse"></i>
                     عروض اليوم
+                    <span class="text-sm text-gray-600 font-normal mr-3">تنتهي قريباً!</span>
                 </h2>
-                <a href="{{ link('offers') }}" class="text-primary font-semibold">
-                    عرض الكل <i class="sicon-keyboard_arrow_left"></i>
+                <a href="{{ link('offers') }}" class="text-primary font-semibold hover:underline">
+                    عرض جميع العروض <i class="sicon-keyboard_arrow_left"></i>
                 </a>
             </div>
-            {% component 'home.featured-products' with {type: 'offers'} %}
+            <salla-products-slider 
+                source="offers" 
+                limit="12"
+                slides-per-view="5"
+                show-timer="true">
+            </salla-products-slider>
         </div>
     </section>
 
     {# Recently Viewed Section #}
     <section class="recently-viewed-section mb-12 hidden">
         <div class="container">
-            <h2 class="text-2xl font-bold mb-6">شاهدتها مؤخراً</h2>
-            <div class="swiper recently-viewed-slider">
-                <div class="swiper-wrapper recently-viewed-products">
-                    {# Products will be inserted here by JavaScript #}
-                </div>
-                <div class="swiper-button-prev recently-viewed-prev"></div>
-                <div class="swiper-button-next recently-viewed-next"></div>
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="sicon-eye ml-2"></i>
+                شاهدتها مؤخراً
+            </h2>
+            <div class="recently-viewed-products products-grid">
+                {# Products will be inserted here by JavaScript #}
             </div>
         </div>
     </section>
 
+    {# Categories with Products Sections #}
+    {% for category in store.categories.roots().limit(5) %}
+        {% if category.products().count() > 0 %}
+            <section class="category-products-section mb-12">
+                <div class="container">
+                    <div class="s-block__title">
+                        <div class="right-side">
+                            <h2>{{ category.name }}</h2>
+                            <p>{{ category.description|slice(0, 100) }}...</p>
+                        </div>
+                        <a href="{{ category.url }}" class="s-block__display-all">
+                            عرض الكل
+                            <i class="sicon-keyboard_arrow_left"></i>
+                        </a>
+                    </div>
+                    <div class="products-grid">
+                        {% for product in category.products().limit(10) %}
+                            <salla-product-card 
+                                product-id="{{ product.id }}"
+                                product-title="{{ product.name }}"
+                                product-price="{{ product.price }}"
+                                product-image="{{ product.image.url }}"
+                                product-url="{{ product.url }}"
+                                show-discount="{{ product.discount ? 'true' : 'false' }}"
+                                discount-amount="{{ product.discount_amount }}"
+                                show-views-count="true"
+                                show-sold-count="true">
+                            </salla-product-card>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    {% endfor %}
+
     {# Shop by Brand #}
-    <section class="shop-by-brand mb-12">
+    <section class="shop-by-brand mb-12 bg-gray-50 py-12">
         <div class="container">
-            <h2 class="text-2xl font-bold mb-6">تسوق حسب الماركة</h2>
+            <h2 class="text-2xl font-bold mb-6 text-center">تسوق حسب الماركة</h2>
             <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                {% for brand in brands[:16] %}
+                {% for brand in store.brands.limit(16) %}
                     <a href="{{ brand.url }}" 
-                       class="brand-card bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition text-center">
+                       class="brand-card bg-white rounded-lg p-4 shadow-sm hover:shadow-lg transition text-center">
                         {% if brand.logo %}
-                            <img src="{{ brand.logo }}" alt="{{ brand.name }}" class="w-20 h-20 object-contain mx-auto">
+                            <img src="{{ brand.logo }}" 
+                                 alt="{{ brand.name }}" 
+                                 class="w-20 h-20 object-contain mx-auto">
                         {% else %}
-                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                <span class="text-gray-500 text-sm">{{ brand.name[:2] }}</span>
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mx-auto">
+                                <span class="text-gray-500 font-bold text-lg">{{ brand.name[:2] }}</span>
                             </div>
                         {% endif %}
+                        <p class="mt-2 text-xs text-gray-600">{{ brand.name }}</p>
                     </a>
                 {% endfor %}
+            </div>
+            <div class="text-center mt-6">
+                <a href="{{ link('brands') }}" class="btn btn-outline-primary">
+                    عرض جميع الماركات
+                </a>
             </div>
         </div>
     </section>
@@ -112,6 +166,16 @@
     {# Original Home Components #}
     {% component 'home' %}
     
+    {# Popup for View/Purchase Counter #}
+    <div id="product-views-popup" class="hidden fixed bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 z-50 animate-slideInUp">
+        <div class="flex items-center">
+            <i class="sicon-eye text-primary ml-2"></i>
+            <span class="text-sm text-gray-700">
+                <strong class="viewer-count">23</strong> شخص يشاهد هذا المنتج الآن
+            </span>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block scripts %}

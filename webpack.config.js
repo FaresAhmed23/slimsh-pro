@@ -25,6 +25,8 @@ module.exports = {
     testimonials: asset("js/testimonials.js"),
     "recently-viewed": asset("js/recently-viewed.js"),
     "brand-filter": asset("js/brand-filter.js"),
+    "bought-together": asset("js/bought-together.js"),
+    "category-filters": asset("js/category-filters.js"),
   },
   output: {
     path: public(),

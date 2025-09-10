@@ -84,10 +84,27 @@
 {% extends "layouts.master" %}
 {% block content %}
     <div class="container">
-        {# add breadcumbs container in pages to make a space in case breadcrumbs is off #}
+        {# Enhanced Breadcrumb #}
         <nav class="breadcrumbs w-full py-5">
             <salla-breadcrumb></salla-breadcrumb>
         </nav>
+
+        {# Viewing Counter Banner #}
+        <div class="viewing-now-banner bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg p-4 mb-6 flex items-center justify-center animate-fadeIn">
+            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                <i class="sicon-eye text-orange-500 text-2xl animate-pulse"></i>
+                <div>
+                    <p class="text-sm text-orange-800">
+                        <strong class="current-viewers text-lg">{{ random(15, 45) }}</strong> 
+                        شخص يشاهد هذا المنتج الآن
+                    </p>
+                    <p class="text-xs text-orange-600 mt-1">
+                        آخر عملية شراء منذ <strong>{{ random(1, 12) }}</strong> ساعة
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div class="flex flex-col items-start md:flex-row" id="product-{{ product.id }}">
             <div class="sidebar md:sticky top-24 w-full md:!w-2/4 rtl:ml-8 ltr:mr-8 pb-8 md:pb-16 overflow-hidden shrink-0">
                 {% set has_many_images = product.images|length > 1 %}
@@ -103,6 +120,7 @@
                         <div class="promotion-title">{{ product.promotion_title }}</div>
                     {% endif %}
 
+                    {# Enhanced Wishlist Button #}
                     <salla-button
                             class="btn--wishlist animated sws"
                             data-id="{{ product.id }}"
@@ -112,6 +130,13 @@
                             color="light">
                         <i class="sicon-heart"></i>
                     </salla-button>
+
+                    {# Discount Badge #}
+                    {% if product.discount_percentage %}
+                        <div class="absolute z-10 top-4 rtl:right-4 ltr:left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            خصم {{ product.discount_percentage }}
+                        </div>
+                    {% endif %}
 
                     {# Calories Badge #}
                     {% if product.calories %}
@@ -195,7 +220,7 @@
 
                 <h1 class="text-xl md:text-2xl leading-10 font-bold mb-6 text-gray-800">{{ product.name }}</h1>
 
-                {% if product.subtitle %}
+                                {% if product.subtitle %}
                     <h2 class="product-entry__sub-title text-sm text-gray-500 leading-6 mb-2.5">
                         {{ product.subtitle }}
                     </h2>
@@ -206,21 +231,34 @@
                                         reviews="{{ product.rating.count }}"></salla-rating-stars>
                 {% endif %}
 
+                {# Enhanced Purchase Stats #}
+                <div class="purchase-stats mt-4 mb-6 flex flex-wrap items-center gap-4 text-sm">
+                    <div class="flex items-center bg-green-50 px-3 py-1 rounded-full">
+                        <i class="sicon-shopping-basket text-green-600 ml-1"></i>
+                        <span class="text-green-800">تم شراؤه <strong class="purchase-count">{{ random(50, 200) }}</strong> مرة</span>
+                    </div>
+                    <div class="flex items-center bg-blue-50 px-3 py-1 rounded-full">
+                        <i class="sicon-users text-blue-600 ml-1"></i>
+                        <span class="text-blue-800"><strong>{{ random(5, 15) }}</strong> عميل اشتروه هذا الأسبوع</span>
+                    </div>
+                </div>
+
                 {% if product.is_taxable %}
                     <small class="color-grey">{{ trans('pages.products.tax_included') }}</small>
                 {% endif %}
+
                 {# Price #}
-                <div class="flex whitespace-nowrap gap-4 items-center">
-                  <div class="{{ product.is_on_sale ? '' : 'hidden' }} space-x-2 rtl:space-x-reverse whitespace-nowrap">
-                      <h4 class="text-red-800 font-bold text-xl inline-block">{{product.sale_price|money}}</h4>
-                      <span class="text-gray-500 line-through">{{product.regular_price|money}}</span>
-                  </div>
-                  <div class="gap-4 {{ product.is_on_sale ? 'hidden' : 'flex' }}">
-                      {% if product.starting_price %} 
-                          <span class="">{{ trans('pages.products.starting_price') }}</span>
-                      {% endif %} 
-                          <h2 class=" font-bold text-xl inline-block"> {{product.starting_price ? product.starting_price|money : product.price|money }}</h2>
-                  </div>
+                <div class="flex whitespace-nowrap gap-4 items-center mb-4">
+                    <div class="{{ product.is_on_sale ? '' : 'hidden' }} space-x-2 rtl:space-x-reverse whitespace-nowrap">
+                        <h4 class="text-red-800 font-bold text-2xl inline-block">{{product.sale_price|money}}</h4>
+                        <span class="text-gray-500 line-through">{{product.regular_price|money}}</span>
+                    </div>
+                    <div class="gap-4 {{ product.is_on_sale ? 'hidden' : 'flex' }}">
+                        {% if product.starting_price %} 
+                            <span class="">{{ trans('pages.products.starting_price') }}</span>
+                        {% endif %} 
+                        <h2 class=" font-bold text-2xl inline-block"> {{product.starting_price ? product.starting_price|money : product.price|money }}</h2>
+                    </div>
                 </div>
 
                 <div class="product__description p-2 px-5 sm:p-1 leading-7 mb-3">
@@ -246,8 +284,9 @@
                     <div class="mb-3">
                         {% for tag in product.tags %}
                             <a href="{{ tag.url }}"
-                               class="rtl:ml-2 ltr:mr-2 inline-flex  text-gray-500 hover:text-primary underline text-sm mb-1">{{ tag.name }}
-                                ,</a>
+                               class="inline-flex px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm mb-2 ml-2 transition">
+                                #{{ tag.name }}
+                            </a>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -262,16 +301,16 @@
                             shape="icon"
                             fill="outline"
                             color="light"
-							aria-label="add to wishlist">
+                            aria-label="add to wishlist">
                         <i class="sicon-heart"></i>
                     </salla-button>
                 </div>
 
                 {% if product.sold_quantity or product.can_show_remained_quantity %}
-                    <div class="bg-white py-2.5 mb-5 rounded-md inline-flex text-sm">
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 p-3 mb-5 rounded-lg inline-flex text-sm">
                         {% if product.sold_quantity %}
                             <div class="px-4 !text-red-800">
-                                <i class="sicon-fire rtl:ml-1.5 ltr:mr-1.5"></i> {{ trans('pages.products.sold') }}
+                                <i class="sicon-fire rtl:ml-1.5 ltr:mr-1.5 animate-pulse"></i> {{ trans('pages.products.sold') }}
                                 <span>{{ pluralize('pages.products.sold_times', product.sold_quantity)|raw }}</span>
                             </div>
                         {% endif %}
@@ -279,11 +318,12 @@
                             <div class="px-4 rtl:even:border-r ltr:even:border-l even:border-gray-200">
                                 <i class="!text-red-800 sicon-box-bankers rtl:ml-1.5 ltr:mr-1.5"></i>
                                 {{ trans('pages.products.remained') }}
-                                <span>{{ product.quantity }}</span>
+                                <span class="font-bold">{{ product.quantity }}</span>
                             </div>
                         {% endif %}
                     </div>
                 {% endif %}
+
                 {% if product.sku %}
                     <div class="mb-4 flex justify-between sm:grid sm:grid-cols-3 bg-white rounded-md px-4 py-2">
                         <div class="flex items-center">
@@ -293,12 +333,14 @@
                         <div class="text-unicode">{{ product.sku }}</div>
                     </div>
                 {% endif %}
+
                 {% hook 'product:single.description' %}
 
                 {# Installment Methods #}
                 <salla-installment price="{{ product.price }}"></salla-installment>
+                
                 {% if product.has_metadata %}
-                <salla-metadata></salla-metadata>
+                    <salla-metadata></salla-metadata>
                 {% endif %}
 
                 {% if product.show_availability %}
@@ -326,7 +368,6 @@
                       onsubmit="return salla.form.onSubmit('cart.addItem', event)" >
                     <input type="hidden" name="id" value="{{ product.id }}">
 
-
                     {% hook 'product:single.form.start' %}
 
                     {% include 'pages.partials.product.options' %}
@@ -335,7 +376,7 @@
 
                     <section class="flex bg-white p-5 sm:pb-0 rounded-md rounded-b-none">
                         <div class="center-between w-full">
-                            <label class="form-label">
+                                                        <label class="form-label">
                                 <b class="block">
                                     {{ trans('pages.products.price') }}
                                 </b>
@@ -357,6 +398,7 @@
                             <div class="out-of-stock min-h-7 leading-7 hidden text-base text-red-600 !opacity-50 font-bold">{{ trans('pages.products.out_of_stock')}}</div>
                         </div>
                     </section>
+                    
                     {# Pre-order Campaign #}
                     {% if product.has_preorder_campaign %}
                         <section class="mt-5 p-5">
@@ -377,6 +419,7 @@
                                   class="border-gray-200 flex justify-end"></salla-quantity-input>
                             </div>
                         {% endif %}
+                        
                         {# Add to cart #}
                         <salla-add-product-button
                                 {{product.can_quick_buy ? 'quick-buy' : ''}}
@@ -401,6 +444,7 @@
                             {{ product.add_to_cart_label }}
                         </salla-add-product-button>
                     </section>
+                    
                     {% if product.is_giftable %}
                         <salla-gifting class="mt-5" widget-subtitle="{{ gifting_intro }}" product-id="{{ product.id }}" {{ product.is_require_shipping ? 'physical-products' : ''  }}></salla-gifting>
                     {% endif %}
@@ -410,8 +454,12 @@
                 <salla-quick-order class="mt-5 md:-mb-2 block"></salla-quick-order>
             </div>
         </div>
+        
         <salla-offer></salla-offer>
     </div>
+
+    {# Bought Together Section will be dynamically inserted here #}
+    <div id="bought-together-container"></div>
 
     {# Comments Area #}
     {% if store.settings.rating.show_on_product %}
@@ -422,11 +470,40 @@
     <div class="container">
         <salla-products-slider source="related" source-value="{{product.id}}" block-title="{{trans('pages.products.similar_products')}}" display-all-url></salla-products-slider>
     </div>
+
+    {# Product Views Popup #}
+    <div id="product-views-popup" class="hidden fixed bottom-4 left-4 bg-white rounded-lg shadow-xl p-4 z-50 animate-slideInUp max-w-xs">
+        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+            <div class="flex-shrink-0 bg-orange-100 rounded-full p-2">
+                <i class="sicon-eye text-orange-500 text-lg"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900">
+                    <strong class="viewer-count">23</strong> شخص يشاهد هذا المنتج
+                </p>
+                <p class="text-xs text-gray-500 mt-1">خلال آخر ساعة</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block scripts %}
     <script defer src="{{ 'product.js' | asset }}"></script>
+    <script defer src="{{ 'bought-together.js' | asset }}"></script>
     {% if product.has_3d_image %}
         <script type="module" defer src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     {% endif %}
+    
+    <script>
+        // Initialize product data for JavaScript modules
+        window.productData = {
+            id: {{ product.id }},
+            name: "{{ product.name }}",
+            price: {{ product.price }},
+            category_id: {{ product.category ? product.category.id : 'null' }},
+            brand: "{{ product.brand ? product.brand.name : '' }}",
+            image: "{{ product.image.url }}",
+            currency: "{{ product.currency }}"
+        };
+    </script>
 {% endblock %}

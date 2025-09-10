@@ -31,8 +31,11 @@ class App extends AppHelpers {
     initTootTip();
     this.loadModalImgOnclick();
 
+    // Initialize enhanced features
     this.initializeEnhancedFeatures();
     this.initializeEnhancedSearch();
+    this.initializeProductViewCounter();
+    this.initializeDynamicBreadcrumbs();
 
     salla.comment.event.onAdded(() => window.location.reload());
 
@@ -42,12 +45,28 @@ class App extends AppHelpers {
   }
 
   initializeEnhancedFeatures() {
+    // Recently Viewed
     import("./recently-viewed.js").then((module) => {
       new module.default();
     });
 
+    // Brand Filter for Category Pages
     if (window.location.pathname.includes("/category/")) {
       import("./brand-filter.js").then((module) => {
+        new module.default();
+      });
+
+      import("./category-filters.js").then((module) => {
+        new module.default();
+      });
+    }
+
+    // Bought Together for Product Pages
+    if (
+      window.location.pathname.includes("/product/") ||
+      window.location.pathname.includes("/p/")
+    ) {
+      import("./bought-together.js").then((module) => {
         new module.default();
       });
     }
@@ -57,21 +76,136 @@ class App extends AppHelpers {
     const searchInput = document.querySelector(".s-search-input");
     if (searchInput) {
       let searchTimeout;
+
+      // Create suggestions dropdown
+      const suggestionsDropdown = document.createElement("div");
+      suggestionsDropdown.className =
+        "search-suggestions-dropdown hidden absolute top-full left-0 right-0 bg-white shadow-lg rounded-b-lg max-h-96 overflow-y-auto z-50";
+      searchInput.parentElement.appendChild(suggestionsDropdown);
+
       searchInput.addEventListener("input", (e) => {
         clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
+        searchTimeout = setTimeout(async () => {
           if (e.target.value.length > 2) {
-            salla.event.dispatch("search:suggestions.fetch", {
-              query: e.target.value,
-            });
+            const suggestions = await this.fetchSearchSuggestions(
+              e.target.value
+            );
+            this.displaySearchSuggestions(suggestions, suggestionsDropdown);
+          } else {
+            suggestionsDropdown.classList.add("hidden");
           }
         }, 300);
+      });
+
+      // Close suggestions on click outside
+      document.addEventListener("click", (e) => {
+        if (
+          !searchInput.contains(e.target) &&
+          !suggestionsDropdown.contains(e.target)
+        ) {
+          suggestionsDropdown.classList.add("hidden");
+        }
       });
     }
   }
 
+  async fetchSearchSuggestions(query) {
+    try {
+      const response = await fetch(
+        `${salla.api.url}/products?q=${query}&limit=8`
+      );
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      console.error("Error fetching search suggestions:", error);
+      return [];
+    }
+  }
+
+  displaySearchSuggestions(suggestions, dropdown) {
+    if (suggestions.length === 0) {
+      dropdown.classList.add("hidden");
+      return;
+    }
+
+    dropdown.innerHTML = suggestions
+      .map(
+        (product) => `
+      <a href="${
+        product.url
+      }" class="flex items-center p-3 hover:bg-gray-50 transition">
+        <img src="${product.image?.url || ""}" alt="${
+          product.name
+        }" class="w-12 h-12 object-cover rounded mr-3">
+        <div class="flex-1">
+          <h4 class="text-sm font-semibold">${product.name}</h4>
+          <p class="text-sm text-primary font-bold">${salla.money(
+            product.price
+          )}</p>
+        </div>
+      </a>
+    `
+      )
+      .join("");
+
+    dropdown.classList.remove("hidden");
+  }
+
+  initializeProductViewCounter() {
+    // Show random view count popup
+    const showViewerCount = () => {
+      const popup = document.getElementById("product-views-popup");
+      if (!popup) return;
+
+      const viewerCount = Math.floor(Math.random() * 30) + 10;
+      popup.querySelector(".viewer-count").textContent = viewerCount;
+
+      popup.classList.remove("hidden");
+
+      setTimeout(() => {
+        popup.classList.add("hidden");
+      }, 5000);
+    };
+
+    // Show popup randomly between 3-8 seconds after page load
+    if (document.getElementById("product-views-popup")) {
+      setTimeout(showViewerCount, Math.random() * 5000 + 3000);
+
+      // Show again every 30-60 seconds
+      setInterval(showViewerCount, Math.random() * 30000 + 30000);
+    }
+  }
+
+  initializeDynamicBreadcrumbs() {
+    const breadcrumb = document.querySelector(".breadcrumb");
+    if (!breadcrumb) return;
+
+    // Enhance breadcrumb with rich snippets
+    breadcrumb.setAttribute("itemscope", "");
+    breadcrumb.setAttribute("itemtype", "https://schema.org/BreadcrumbList");
+
+    const items = breadcrumb.querySelectorAll("a, span");
+    items.forEach((item, index) => {
+      const wrapper = document.createElement("span");
+      wrapper.setAttribute("itemprop", "itemListElement");
+      wrapper.setAttribute("itemscope", "");
+      wrapper.setAttribute("itemtype", "https://schema.org/ListItem");
+
+      item.setAttribute("itemprop", item.tagName === "A" ? "item" : "name");
+
+      const position = document.createElement("meta");
+      position.setAttribute("itemprop", "position");
+      position.setAttribute("content", index + 1);
+
+      wrapper.appendChild(item.cloneNode(true));
+      wrapper.appendChild(position);
+
+      item.parentNode.replaceChild(wrapper, item);
+    });
+  }
+
   log(message) {
-    salla.log(`ThemeApp(Raed)::${message}`);
+    salla.log(`ThemeApp(Raed Enhanced)::${message}`);
     return this;
   }
 

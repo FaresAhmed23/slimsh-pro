@@ -1,118 +1,165 @@
 {% extends "layouts.master" %}
-
 {% block content %}
+
 <div class="container">
-    <nav class="breadcrumb mb-6">
-        <a href="{{ link('/') }}">الرئيسية</a>
-        <i class="sicon-keyboard_arrow_left mx-2"></i>
-        <span>{{ category.name }}</span>
+    <nav class="breadcrumb py-3">
+        <a href="{{ link('/') }}" class="text-gray-500 hover:text-primary">الرئيسية</a>
+        <i class="sicon-keyboard_arrow_left mx-2 text-gray-400"></i>
+        <span class="text-gray-900">{{ category.name }}</span>
     </nav>
 
     <div class="grid grid-cols-12 gap-6">
         {# Filters Sidebar #}
         <aside class="col-span-12 lg:col-span-3">
-            <div class="filters-container bg-white rounded-lg shadow-sm p-4 sticky top-20">
+            <div class="filters-container sticky" id="filters-menu">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-lg">تصفية النتائج</h3>
-                    <button class="text-sm text-red-500 clear-filters hidden">مسح الكل</button>
+                    <h3 class="text-lg font-bold">تصفية النتائج</h3>
+                    <button class="clear-filters text-sm text-red-500 hover:text-red-700 hidden">
+                        <i class="sicon-delete-sweep ml-1"></i>
+                        مسح الكل
+                    </button>
                 </div>
 
-                {# Brand Filter will be inserted here by JS #}
-                
-                {# Price Range Filter #}
-                <div class="filter-group mb-6">
-                    <h4 class="font-semibold mb-3">السعر</h4>
-                    <div class="price-range-inputs">
-                        <div class="flex gap-2 mb-3">
-                            <input type="number" 
-                                   placeholder="من" 
-                                   class="price-from form-input flex-1" 
-                                   min="0">
-                            <input type="number" 
-                                   placeholder="إلى" 
-                                   class="price-to form-input flex-1" 
-                                   min="0">
+                {# Brand Filter #}
+                <div class="filter-group brand-filter-section">
+                    <h4 class="mb-3">الماركات</h4>
+                    <div class="brand-filter-content">
+                        <input type="text" 
+                               placeholder="البحث عن ماركة..." 
+                               class="brand-search w-full mb-3 text-sm"
+                               id="brand-search-input">
+                        <div class="brand-filter-list">
+                            {# Brands will be populated by JavaScript #}
                         </div>
-                        <button class="apply-price-filter btn btn-primary btn-sm w-full">
-                            تطبيق
-                        </button>
                     </div>
                 </div>
 
+                                {# Price Filter #}
+                <div class="filter-group price-filter-section">
+                    <h4 class="mb-3">السعر</h4>
+                    <div class="price-filter">
+                        <input type="number" 
+                               class="price-from" 
+                               placeholder="من"
+                               min="0">
+                        <input type="number" 
+                               class="price-to" 
+                               placeholder="إلى"
+                               min="0">
+                    </div>
+                    <button class="apply-price-filter btn btn-sm btn-primary mt-3 w-full">
+                        تطبيق
+                    </button>
+                </div>
+
                 {# Rating Filter #}
-                {% if store.settings.rating_enabled %}
-                <div class="filter-group mb-6">
-                    <h4 class="font-semibold mb-3">التقييم</h4>
+                <div class="filter-group rating-filter-section">
+                    <h4 class="mb-3">التقييم</h4>
                     <div class="space-y-2">
                         {% for rating in [5, 4, 3, 2, 1] %}
                             <label class="flex items-center cursor-pointer">
                                 <input type="checkbox" 
-                                       class="rating-filter ml-2" 
+                                       class="rating-filter" 
                                        value="{{ rating }}">
-                                <div class="flex items-center">
-                                    {% for i in 1..5 %}
-                                        <i class="sicon-star {{ i <= rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                                <span class="mr-2 flex items-center">
+                                    {% for i in 1..rating %}
+                                        <i class="sicon-star text-yellow-400"></i>
                                     {% endfor %}
-                                    <span class="mr-2 text-sm text-gray-600">فما فوق</span>
-                                </div>
+                                    {% for i in rating..4 %}
+                                        <i class="sicon-star text-gray-300"></i>
+                                    {% endfor %}
+                                    <span class="text-sm text-gray-600 mr-2">{{ rating }} فما فوق</span>
+                                </span>
                             </label>
                         {% endfor %}
                     </div>
                 </div>
-                {% endif %}
 
-                {# Availability Filter #}
-                <div class="filter-group">
+                {# Stock Filter #}
+                <div class="filter-group stock-filter-section">
+                    <h4 class="mb-3">التوفر</h4>
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" class="in-stock-only ml-2">
-                        <span>المتوفر فقط</span>
+                        <input type="checkbox" class="in-stock-only">
+                        <span class="mr-2">المنتجات المتوفرة فقط</span>
                     </label>
                 </div>
             </div>
         </aside>
 
-        {# Products Grid #}
+        {# Products Section #}
         <main class="col-span-12 lg:col-span-9">
-            {# Sorting and View Options #}
-            <div class="products-header bg-white rounded-lg shadow-sm p-4 mb-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div class="products-count">
-                        عرض <span class="font-bold">{{ products.total }}</span> منتج
-                    </div>
-                    
-                    <div class="flex items-center gap-4">
-                        {# Sort Dropdown #}
-                        <select class="form-select sort-products">
-                            <option value="">ترتيب حسب</option>
-                            <option value="new">الأحدث</option>
-                            <option value="price-asc">السعر: من الأقل للأعلى</option>
-                            <option value="price-desc">السعر: من الأعلى للأقل</option>
-                            <option value="rating">الأعلى تقييماً</option>
-                        </select>
+            {# Category Header #}
+            <div class="category-header bg-gray-50 rounded-lg p-6 mb-6">
+                <h1 class="text-2xl font-bold mb-2">{{ category.name }}</h1>
+                {% if category.description %}
+                    <p class="text-gray-600">{{ category.description }}</p>
+                {% endif %}
+            </div>
 
-                        {# Grid/List View Toggle #}
-                        <div class="view-toggle flex">
-                            <button class="view-grid active p-2">
-                                <i class="sicon-grid text-lg"></i>
-                            </button>
-                            <button class="view-list p-2">
-                                <i class="sicon-list text-lg"></i>
-                            </button>
-                        </div>
+            {# Subcategories Pills #}
+            {% if category.children|length > 0 %}
+                <div class="subcategories-pills mb-6">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3">الأقسام الفرعية:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for subcategory in category.children %}
+                            <a href="{{ subcategory.url }}" 
+                               class="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm hover:bg-primary hover:text-white hover:border-primary transition">
+                                {{ subcategory.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Products Controls #}
+            <div class="products-controls flex items-center justify-between mb-6">
+                <div class="products-count">
+                    <span class="text-gray-600">عرض <span class="font-bold">{{ products.total }}</span> منتج</span>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    {# Sort Dropdown #}
+                    <select class="sort-products form-control text-sm">
+                        <option value="">الترتيب الافتراضي</option>
+                        <option value="price-asc">السعر: من الأقل للأعلى</option>
+                        <option value="price-desc">السعر: من الأعلى للأقل</option>
+                        <option value="rating">التقييم الأعلى</option>
+                        <option value="newest">الأحدث</option>
+                        <option value="bestseller">الأكثر مبيعاً</option>
+                    </select>
+
+                    {# View Toggle #}
+                    <div class="view-toggle">
+                        <button class="view-grid active" title="عرض شبكي">
+                            <i class="sicon-grid"></i>
+                        </button>
+                        <button class="view-list" title="عرض قائمة">
+                            <i class="sicon-list"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            {# Products List #}
-            <div class="s-products-list grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {# Products Grid #}
+            <div class="s-products-list products-grid">
                 {% for product in products %}
                     <div class="s-products-list-item" 
-                         data-product-brand="{{ product.brand.name }}"
                          data-product-price="{{ product.price }}"
-                         data-product-rating="{{ product.rating }}">
+                         data-product-rating="{{ product.rating.value }}"
+                         data-product-brand="{{ product.brand.name }}"
+                         data-product-id="{{ product.id }}">
                         <salla-product-card 
-                            class="product-entry" 
-                            product="{{ product|json_encode }}">
+                            product-id="{{ product.id }}"
+                            product-title="{{ product.name }}"
+                            product-price="{{ product.price }}"
+                            product-image="{{ product.image.url }}"
+                            product-url="{{ product.url }}"
+                            show-discount="{{ product.discount ? 'true' : 'false' }}"
+                            discount-amount="{{ product.discount_amount }}"
+                            show-views-count="true"
+                            show-sold-count="true"
+                            class="product-entry">
+                            <div class="product-brand hidden">{{ product.brand.name }}</div>
                         </salla-product-card>
                     </div>
                 {% endfor %}
@@ -121,15 +168,16 @@
             {# Pagination #}
             {% if products.has_pages %}
                 <div class="pagination-wrapper mt-8">
-                    {{ products.links }}
+                    {{ products|pagination }}
                 </div>
             {% endif %}
         </main>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
-    <script defer src="{{ 'brand-filter.js' | asset }}"></script>
     <script defer src="{{ 'category-filters.js' | asset }}"></script>
+    <script defer src="{{ 'brand-filter.js' | asset }}"></script>
 {% endblock %}

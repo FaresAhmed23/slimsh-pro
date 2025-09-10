@@ -1,7 +1,7 @@
 export default class RecentlyViewed {
   constructor() {
     this.storageKey = "salla_recently_viewed";
-    this.maxItems = 12;
+    this.maxItems = 15;
     this.init();
   }
 
@@ -14,10 +14,11 @@ export default class RecentlyViewed {
       this.trackProduct();
     }
 
-    // Display recently viewed on home page
-    if (document.querySelector(".recently-viewed-section")) {
-      this.displayProducts();
-    }
+    // Display recently viewed on home and category pages
+    this.displayProducts();
+
+    // Auto-refresh display every 30 seconds
+    setInterval(() => this.displayProducts(), 30000);
   }
 
   trackProduct() {
@@ -33,6 +34,9 @@ export default class RecentlyViewed {
         price: product.price,
         sale_price: product.sale_price,
         currency: product.currency,
+        rating: product.rating?.value || 0,
+        category_id: product.category_id,
+        brand: product.brand?.name || "",
         timestamp: Date.now(),
       };
 
@@ -47,6 +51,11 @@ export default class RecentlyViewed {
     products = products.slice(0, this.maxItems);
 
     localStorage.setItem(this.storageKey, JSON.stringify(products));
+
+    // Trigger custom event
+    document.dispatchEvent(
+      new CustomEvent("recently-viewed:updated", { detail: products })
+    );
   }
 
   getProducts() {
@@ -59,6 +68,7 @@ export default class RecentlyViewed {
 
       return products.filter((p) => p.timestamp > oneDayAgo);
     } catch (e) {
+      console.error("Error getting recently viewed products:", e);
       return [];
     }
   }
@@ -67,40 +77,77 @@ export default class RecentlyViewed {
     const products = this.getProducts();
     if (products.length < 2) return;
 
-    const container = document.querySelector(".recently-viewed-products");
-    if (!container) return;
+    const containers = document.querySelectorAll(".recently-viewed-products");
+    if (!containers.length) return;
 
-    document
-      .querySelector(".recently-viewed-section")
-      ?.classList.remove("hidden");
+    // Show the section
+    document.querySelectorAll(".recently-viewed-section").forEach((section) => {
+      section.classList.remove("hidden");
+      section.classList.add("has-products");
+    });
 
-    container.innerHTML = products
+    const productsHTML = products
       .map(
         (product) => `
-      <div class="swiper-slide">
-        <div class="product-card">
-          <a href="${product.url}">
-            <img src="${product.image}" alt="${
-          product.name
-        }" class="w-full h-48 object-cover rounded-lg mb-3">
-            <h3 class="text-sm font-semibold mb-2">${product.name}</h3>
-            <div class="flex items-center gap-2">
+      <div class="recently-viewed-item relative group">
+        <a href="${product.url}" class="block">
+          <div class="relative overflow-hidden rounded-lg mb-3">
+            <img src="${product.image}" 
+                 alt="${product.name}" 
+                 class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            ${
+              product.sale_price
+                ? `
+              <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                خصم ${Math.round(
+                  ((product.price - product.sale_price) / product.price) * 100
+                )}%
+              </div>
+            `
+                : ""
+            }
+          </div>
+          <h3 class="text-sm font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+            ${product.name}
+          </h3>
+          <div class="flex items-center justify-between">
+            <div class="price-wrapper">
               ${
                 product.sale_price
                   ? `
-                <span class="text-red-500 font-bold">${product.sale_price} ${product.currency}</span>
-                <span class="text-gray-400 line-through text-sm">${product.price} ${product.currency}</span>
+                <span class="text-red-500 font-bold">${salla.money(
+                  product.sale_price
+                )}</span>
+                <span class="text-gray-400 line-through text-sm mr-2">${salla.money(
+                  product.price
+                )}</span>
               `
                   : `
-                <span class="font-bold">${product.price} ${product.currency}</span>
+                <span class="font-bold text-primary">${salla.money(
+                  product.price
+                )}</span>
               `
               }
             </div>
-          </a>
-        </div>
+            ${
+              product.rating > 0
+                ? `
+              <div class="flex items-center">
+                <i class="sicon-star text-yellow-400 text-xs"></i>
+                <span class="text-xs text-gray-600 mr-1">${product.rating}</span>
+              </div>
+            `
+                : ""
+            }
+          </div>
+        </a>
       </div>
     `
       )
       .join("");
+
+    containers.forEach((container) => {
+      container.innerHTML = productsHTML;
+    });
   }
 }

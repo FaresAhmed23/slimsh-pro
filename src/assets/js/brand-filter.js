@@ -1,14 +1,18 @@
 export default class BrandFilter {
   constructor() {
+    this.brands = new Map();
+    this.selectedBrands = new Set();
     this.init();
   }
 
   init() {
     if (!this.isCategoryPage()) return;
 
-    // انتظر تحميل المنتجات
-    window.addEventListener("salla:products.fetched", () => {
+    // Wait for DOM to be ready
+    this.waitForProducts().then(() => {
+      this.collectBrands();
       this.createBrandFilter();
+      this.attachEvents();
     });
   }
 
@@ -19,82 +23,148 @@ export default class BrandFilter {
     );
   }
 
-  createBrandFilter() {
-    const filterContainer = document.querySelector(
-      ".filters-container, #filters-menu"
-    );
-    if (!filterContainer) return;
-
-    const brands = this.collectBrands();
-    if (brands.length === 0) return;
-
-    const brandFilterHTML = `
-      <div class="brand-filter-section mb-6 border-b pb-6">
-        <h3 class="font-bold mb-4">تسوق حسب الماركة</h3>
-        <div class="space-y-2 max-h-48 overflow-y-auto">
-          ${brands
-            .map(
-              (brand) => `
-            <label class="flex items-center cursor-pointer hover:text-primary">
-              <input type="checkbox" 
-                     class="brand-checkbox ml-2" 
-                     value="${brand.name}">
-              <span>${brand.name} (${brand.count})</span>
-            </label>
-          `
-            )
-            .join("")}
-        </div>
-      </div>
-    `;
-
-    // أضف بعد فلتر الأسعار
-    const priceFilter = filterContainer.querySelector(".price-filter");
-    if (priceFilter) {
-      priceFilter.insertAdjacentHTML("afterend", brandFilterHTML);
-    } else {
-      filterContainer.insertAdjacentHTML("afterbegin", brandFilterHTML);
-    }
-
-    this.attachEvents();
+  waitForProducts() {
+    return new Promise((resolve) => {
+      if (document.querySelector(".s-products-list-item")) {
+        resolve();
+      } else {
+        const observer = new MutationObserver((mutations, obs) => {
+          if (document.querySelector(".s-products-list-item")) {
+            obs.disconnect();
+            resolve();
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+    });
   }
 
   collectBrands() {
-    const brandsMap = new Map();
+    this.brands.clear();
 
-    document.querySelectorAll(".product-entry").forEach((product) => {
-      const brandEl = product.querySelector(".product-brand");
-      if (brandEl) {
-        const brandName = brandEl.textContent.trim();
-        brandsMap.set(brandName, (brandsMap.get(brandName) || 0) + 1);
+    document.querySelectorAll(".s-products-list-item").forEach((product) => {
+      const brandName =
+        product.dataset.productBrand ||
+        product.querySelector(".product-brand")?.textContent?.trim();
+
+      if (brandName) {
+        this.brands.set(brandName, (this.brands.get(brandName) || 0) + 1);
       }
     });
+  }
 
-    return Array.from(brandsMap.entries())
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count);
+  createBrandFilter() {
+    const filterSection = document.querySelector(".brand-filter-section");
+    if (!filterSection || this.brands.size === 0) return;
+
+    const brandList = filterSection.querySelector(".brand-filter-list");
+    if (!brandList) return;
+
+    // Sort brands by count
+    const sortedBrands = Array.from(this.brands.entries()).sort(
+      (a, b) => b[1] - a[1]
+    );
+
+    brandList.innerHTML = sortedBrands
+      .map(
+        ([brand, count]) => `
+      <label class="brand-filter-item flex items-center py-2 hover:text-primary cursor-pointer">
+        <input type="checkbox" 
+               class="brand-checkbox mr-2" 
+               value="${brand}">
+        <span class="flex-1">${brand}</span>
+        <span class="text-xs text-gray-500">(${count})</span>
+      </label>
+    `
+      )
+      .join("");
+
+    this.attachBrandSearch();
+  }
+
+  attachBrandSearch() {
+    const searchInput = document.getElementById("brand-search-input");
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+
+      document.querySelectorAll(".brand-filter-item").forEach((item) => {
+        const brandName = item.querySelector("span").textContent.toLowerCase();
+        item.style.display = brandName.includes(searchTerm) ? "" : "none";
+      });
+    });
   }
 
   attachEvents() {
-    document.querySelectorAll(".brand-checkbox").forEach((checkbox) => {
-      checkbox.addEventListener("change", () => this.filterProducts());
+    // Brand checkbox change
+    document.addEventListener("change", (e) => {
+      if (e.target.classList.contains("brand-checkbox")) {
+        this.handleBrandChange(e.target);
+      }
     });
+
+    // Clear filters button
+    const clearBtn = document.querySelector(".clear-filters");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => this.clearAllFilters());
+    }
+  }
+
+  handleBrandChange(checkbox) {
+    const brand = checkbox.value;
+
+    if (checkbox.checked) {
+      this.selectedBrands.add(brand);
+    } else {
+      this.selectedBrands.delete(brand);
+    }
+
+    this.filterProducts();
+    this.updateClearButton();
   }
 
   filterProducts() {
-    const selectedBrands = Array.from(
-      document.querySelectorAll(".brand-checkbox:checked")
-    ).map((cb) => cb.value);
+    const products = document.querySelectorAll(".s-products-list-item");
+    let visibleCount = 0;
 
-    document.querySelectorAll(".product-entry").forEach((product) => {
-      const brandEl = product.querySelector(".product-brand");
-      const brandName = brandEl ? brandEl.textContent.trim() : "";
+    products.forEach((product) => {
+      const productBrand =
+        product.dataset.productBrand ||
+        product.querySelector(".product-brand")?.textContent?.trim();
 
-      if (selectedBrands.length === 0 || selectedBrands.includes(brandName)) {
-        product.style.display = "";
-      } else {
-        product.style.display = "none";
-      }
+      const shouldShow =
+        this.selectedBrands.size === 0 || this.selectedBrands.has(productBrand);
+
+      product.style.display = shouldShow ? "" : "none";
+      if (shouldShow) visibleCount++;
     });
+
+    this.updateProductCount(visibleCount);
+  }
+
+  updateProductCount(count) {
+    const countElement = document.querySelector(".products-count span span");
+    if (countElement) {
+      countElement.textContent = count;
+    }
+  }
+
+  updateClearButton() {
+    const clearBtn = document.querySelector(".clear-filters");
+    if (clearBtn) {
+      clearBtn.classList.toggle("hidden", this.selectedBrands.size === 0);
+    }
+  }
+
+  clearAllFilters() {
+    this.selectedBrands.clear();
+
+    document.querySelectorAll(".brand-checkbox").forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+
+    this.filterProducts();
+    this.updateClearButton();
   }
 }

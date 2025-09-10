@@ -3,53 +3,6 @@
  * tailwind classes with @apply directive in the SCSS files
 */
 
-/**
- * SETTINGS
- * Tailwind.............Import tailwind.
- * Fonts................Any font files.
- * Global...............Project-specific, globally available variables.
- * Breakpoints..........Mixins and variables for responsive styles.
- *
- * GENERIC
- * Common...............All commn styles and assistan classes and common style fixes
- * Reset................Reset specific elements to make them easier to style in other contexts.
- * Animations...........Some of animations from anime.css
- * Lazyload.............Lazyload placeholder styles
- * RTL..................Specific styles for RTL.
- * LTR..................Specific styles for LTR.
- *
- * ELEMENTS
- * Forms................Element-level form styling.
- * Buttons..............Specific styles for buttons.
- * Radio................Specific styles for custom radio button.
- * Radio Images.........Specific styles for radio images, used in product options.
- *
- * COMPONENTS
- * Header...............Specific styles for header styles.
- * Footer...............Specific styles for footer styles.
- * Menu.................Specific styles for main menu and mobile menu styles.
- * User Menu............Specific styles for user menu dropdown.
- * User Pages...........Specific styles for user pages like profile, notifications, orders...
- * Home Blocks..........Specific styles for home blocks.
- * Slider...............Specific styles for sliders.
- * Product..............Specific styles for single product page and it's elements.
- * Brands...............Specific styles for brands page.
- * Placeholder..........Specific styles for no content placeholders.
- * Gifting..............Specific styles for gifting system.
- * Loyalty..............Specific styles for loyalty system.
- *
- * UTILITIES
- * Chat Bots............Specific styles for chats bots widget.
- * Swal.................Specific styles for Sweet Alert addon.
- * Safari Fixes.........Specific styles for Safari Browser.
- *
- * EMBEDED ADDONS
- * Lite Youtube Embed...Specific styles for lite-youtube-embed addon.
- * Swiper...............Specific styles for swiper slider addon.
- * MMenu................Specific styles for mmenu addon.
- *
-*/
-
 @import "./01-settings/tailwind";
 @import "./01-settings/fonts";
 @import "./01-settings/global";
@@ -94,3 +47,308 @@
 @import "mmenu-light/dist/mmenu-light.css";
 @import "./04-components/homepage";
 @import "./02-layouts/main";
+
+// Enhanced Hero Section with Categories
+.hero-with-categories {
+  .categories-sidebar {
+    height: fit-content;
+    max-height: 520px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-gray-100 rounded;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-gray-300 rounded hover:bg-gray-400;
+    }
+
+    h3 {
+      @apply sticky top-0 bg-white z-10;
+    }
+  }
+}
+
+// Category Grid
+.category-grid {
+  @apply grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-3 md:gap-4;
+}
+
+// Products Grid
+.products-grid {
+  @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4;
+}
+
+// Section Wrappers
+.section-wrapper {
+  @apply py-8 md:py-12;
+}
+
+/*
+  Enhanced Block Title
+*/
+.s-block {
+  &__title {
+    @apply flex items-center justify-between mb-6 md:mb-8;
+
+    .right-side {
+      @apply flex-1;
+
+      h2 {
+        @apply text-xl md:text-2xl font-bold text-gray-900 mb-1;
+      }
+
+      p {
+        @apply text-sm text-gray-600 line-clamp-1;
+      }
+    }
+
+    &-nav {
+      @apply hidden sm:flex ltr:flex-row-reverse rtl:space-x-reverse space-x-2.5;
+    }
+  }
+
+  &__display-all {
+    @apply inline-flex items-center gap-2 text-primary font-semibold hover:underline transition-all;
+
+    i {
+      @apply ltr:rotate-180;
+    }
+  }
+}
+
+// Today's Deals Section
+.todays-deals {
+  @apply relative overflow-hidden;
+
+  &::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5;
+  }
+
+  .container {
+    @apply relative z-10;
+  }
+}
+
+// Recently Viewed Section
+.recently-viewed-section {
+  &.has-products {
+    @apply block;
+  }
+}
+
+// Category Products Section
+.category-products-section {
+  &:nth-child(odd) {
+    @apply bg-gray-50;
+  }
+}
+
+// Enhanced Product Card
+salla-product-card {
+  .product-footer {
+    .views-count,
+    .sold-count {
+      @apply text-xs text-gray-500 flex items-center gap-1;
+
+      i {
+        @apply text-gray-400;
+      }
+    }
+  }
+}
+
+// Shop by Brand
+.shop-by-brand {
+  .brand-card {
+    @apply transform transition-all hover:scale-105;
+
+    img {
+      @apply filter grayscale hover:grayscale-0 transition-all;
+    }
+  }
+}
+
+// Filters Enhancement
+.filters-container {
+  @apply bg-white rounded-lg shadow-sm p-6;
+
+  .filter-group {
+    @apply border-b border-gray-200 pb-4 mb-4;
+
+    &:last-child {
+      @apply border-b-0 mb-0;
+    }
+
+    h4 {
+      @apply cursor-pointer select-none font-semibold text-gray-900 flex items-center justify-between;
+
+      &:after {
+        content: "\e92a";
+        font-family: "sallaicons";
+        @apply transition-transform duration-200;
+      }
+
+      &.collapsed:after {
+        @apply transform -rotate-90;
+      }
+    }
+  }
+
+  .brand-filter-list {
+    max-height: 250px;
+    overflow-y: auto;
+    @apply mt-3;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-gray-300 rounded;
+    }
+
+    label {
+      @apply flex items-center py-2 hover:text-primary cursor-pointer;
+
+      input {
+        @apply mr-2;
+      }
+    }
+  }
+
+  .price-filter {
+    @apply flex gap-3 mt-3;
+
+    input {
+      @apply flex-1;
+    }
+  }
+
+  .apply-filters {
+    @apply mt-4 w-full btn btn-primary;
+  }
+}
+
+// View Toggle
+.view-toggle {
+  @apply bg-gray-100 rounded-lg overflow-hidden inline-flex p-1;
+
+  button {
+    @apply px-3 py-1.5 text-gray-600 transition rounded;
+
+    &.active {
+      @apply bg-white shadow-sm text-primary;
+    }
+
+    i {
+      @apply text-lg;
+    }
+  }
+}
+
+// List View for Products
+.s-products-list.list-view {
+  @apply grid-cols-1 gap-4;
+
+  salla-product-card,
+  .product-entry {
+    @apply bg-white rounded-lg shadow-sm p-4;
+
+    .product-content {
+      @apply flex items-start gap-4;
+
+      .product-image {
+        @apply w-32 h-32 flex-shrink-0;
+
+        img {
+          @apply w-full h-full object-cover rounded-lg;
+        }
+      }
+
+      .product-details {
+        @apply flex-1;
+
+        .product-title {
+          @apply text-lg font-semibold mb-2 line-clamp-2;
+        }
+
+        .product-description {
+          @apply text-gray-600 text-sm mb-3 line-clamp-2;
+        }
+
+        .product-footer {
+          @apply flex items-center justify-between;
+        }
+      }
+    }
+  }
+}
+
+// Popup Animations
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.3s ease-out forwards;
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  .hero-with-categories {
+    .categories-sidebar {
+      @apply hidden;
+    }
+  }
+
+  .category-grid {
+    @apply gap-2;
+
+    .category-card {
+      @apply p-2;
+
+      span {
+        @apply text-xs;
+      }
+
+      .bg-gray-50 {
+        @apply p-2;
+
+        i {
+          @apply text-2xl;
+        }
+
+        img {
+          @apply w-12 h-12;
+        }
+      }
+    }
+  }
+
+  .products-grid {
+    @apply gap-3;
+  }
+
+  .s-block__title {
+    @apply mb-4;
+
+    .right-side {
+      h2 {
+        @apply text-lg;
+      }
+    }
+  }
+}
