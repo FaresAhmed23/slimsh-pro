@@ -15,12 +15,11 @@
     <link rel="stylesheet" href="{{ theme.font.path|cdn }}"/>
     <link rel="stylesheet" href="{{ 'fonts/sallaicons.css'|cdn }}"/>
     
-    {# Load main app CSS synchronously for faster rendering of the page #}
     {% if app.mode == 'preview' %}
-        <link rel="stylesheet" href="http://localhost:8000/app.css?v={{ 'now'|date('U') }}">
-    {% else %}
-        <link rel="stylesheet" href="{{ 'app.css' | asset }}">
-    {% endif %}
+    <link rel="stylesheet" href="http://localhost:8014/app.css?v={{ 'now'|date('U') }}">
+{% else %}
+    <link rel="stylesheet" href="{{ ('app.css?v=' ~ 'now'|date('U')) | asset }}">
+{% endif %}
     
     <style>
         :root {
