@@ -5,82 +5,186 @@
 | cart.items_count | int     |                                 |
 | cart.total       | string  | Formatted total ex: "١٠٠ ر.س"   |
 #}
-{% set important_links = theme.settings.get('important_links') %}
-<header class="store-header">
-  {# Top Nav #}
-  <div class="top-navbar">
-    <div class="container flex justify-between">
-      <div class="flex-1 flex items-center gap-2">
-          {# Footer Menu #}
-          {% if important_links %}
-            <salla-menu source="footer" topnav></salla-menu>
+
+<header class="store-header slimsh-style">
+  {# Main Header - Single Row Like Slimsh #}
+  <div class="main-header">
+    <div class="container">
+      <div class="header-wrapper">
+        {# Left Section - Logo #}
+        <div class="header-start">
+          <a class="navbar-brand" href="{{ store.url }}">
+            <img fetchpriority="high" width="auto" height="50" loading="eager" 
+                 src="{{ store.logo }}" alt="{{ store.name }} logo">
+            {% if is_page('index') %}
+              <h1 class="sr-only">{{ store.name }}</h1>
+            {% else %}
+              <h2 class="sr-only">{{ store.name }}</h2>
+            {% endif %}
+          </a>
+        </div>
+
+        {# Center Section - Main Menu (Desktop Only) #}
+        <nav class="header-center hidden lg:flex">
+          <ul class="main-menu-list">
+            <li><a href="{{ link('/') }}" class="menu-link {{ is_page('index') ? 'active' : '' }}">الرئيسية</a></li>
+            
+            {# Dynamic Categories #}
+            {% for category in store.categories.roots().limit(6) %}
+              <li class="has-dropdown">
+                <a href="{{ category.url }}" class="menu-link">{{ category.name }}</a>
+                {% if category.children|length > 0 %}
+                  <div class="dropdown-menu">
+                    <div class="dropdown-inner">
+                      {% for subcategory in category.children %}
+                        <a href="{{ subcategory.url }}" class="dropdown-item">{{ subcategory.name }}</a>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+              </li>
+            {% endfor %}
+            
+            <li><a href="{{ link('brands') }}" class="menu-link">الماركات</a></li>
+            <li><a href="{{ link('offers') }}" class="menu-link text-red-500">العروض</a></li>
+          </ul>
+        </nav>
+
+        {# Right Section - Actions #}
+        <div class="header-end">
+          {# Search Icon #}
+          <button class="header-icon-btn" onclick="openSearchModal()" aria-label="Search">
+            <i class="sicon-search"></i>
+          </button>
+
+          {# User Account #}
+          {% if user.type == 'user' %}
+            <salla-user-menu avatar-only show-header></salla-user-menu>
+          {% else %}
+            <button class="header-icon-btn" aria-label="Login" onclick="salla.event.dispatch('login::open')">
+              <i class="sicon-user-circle"></i>
+            </button>
           {% endif %}
 
-          {# Language & Currency Component #}
-          <div class="header-buttons">
-              {% if store.settings.is_multilingual or store.settings.currencies_enabled %}
-                  <button type="button" onclick="salla.event.dispatch('localization::open')" class="btn--rounded-gray basis-0">
-                      <span class="flag iti__flag iti__{{ user.language.country_code }} rounded-sm"></span>
-                      <span class="mx-1.5">|</span> <span>{{ currency.symbol }}</span>
-                  </button>
-                  <salla-localization-modal></salla-localization-modal>
-              {% endif %}
-          </div>
+          {# Cart with Badge #}
+          <salla-cart-summary class="header-cart">
+            <a slot="icon" href="{{ link('cart') }}" class="header-icon-btn relative">
+              <i class="sicon-shopping-bag"></i>
+              <span class="cart-badge" data-cart-count>{{ cart.items_count ?: 0 }}</span>
+            </a>
+          </salla-cart-summary>
 
-          {# Scopes | Branches #}
-          {% if store.scope %}
-              <button class="btn--rounded-gray"
-                      onclick="salla.event.dispatch('scopes::open', {'mode': 'default'})">
-                  <i class="sicon-location rtl:ml-1 ltr:mr-1"></i> {{ store.scope.name }}
-              </button>
-          {% endif %}
-
-          {# Search bar #}
-          <div class="header-search flex-1">
-            <salla-search inline oval height="36"></salla-search>
-          </div>
+          {# Mobile Menu Toggle #}
+          <button class="header-icon-btn lg:hidden" onclick="openMobileMenu()" aria-label="Menu">
+            <i class="sicon-menu"></i>
+          </button>
+        </div>
       </div>
-
-      <salla-contacts is-header></salla-contacts>
     </div>
   </div>
 
-  {# Main Nav #}
-  <div id="mainnav" class="main-nav-container shadow-default bg-white">
-      <div class="inner bg-inherit">
-          <div class="container">
-              <div class="flex items-stretch justify-between relative">
-                  <div class="flex items-center">
-                      <a class="lg:hidden mburger mburger--collapse leading-none rtl:ml-4 ltr:mr-4" href="#mobile-menu" aria-label="Open-menu">
-                        <i class="sicon-menu text-primary text-2xl"></i>
-                      </a>
-                      <a class="navbar-brand" href="{{ store.url }}">
-                          <img fetchpriority="high" width="100%" height="100%" loading="eager" src="{{ store.logo }}" alt="{{ store.name }} logo">
-                          {% if is_page('index') %}
-                            <h1 class="sr-only">{{ store.name }}</h1>
-                          {% else %}
-                            <h2 class="sr-only">{{ store.name }}</h2>
-                          {% endif %}
-                      </a>
-                      <custom-main-menu></custom-main-menu>
-                  </div>
-                  <div class="flex items-center justify-end">
-                      {% if user.type=='user' %}
-                        <salla-user-menu avatar-only show-header></salla-user-menu>
-                      {% else %}
-                          <button class="header-btn" aria-label="user-icon" onclick="salla.event.dispatch('login::open')">
-                            <i class="header-btn__icon sicon-user-circle"></i>
-                          </button>
-                      {% endif %}
-                      <salla-cart-summary class="ml-4 rtl:ml-[unset] rtl:mr-4">
-                        <i slot="icon" class="header-btn__icon icon sicon-shopping-bag"></i>
-                      </salla-cart-summary>
-                  </div>
-              </div>
+  {# Search Modal #}
+  <div id="search-modal" class="search-modal">
+    <div class="search-modal-inner">
+      <button class="close-search" onclick="closeSearchModal()">
+        <i class="sicon-cancel"></i>
+      </button>
+      <div class="search-container">
+        <salla-search inline autofocus></salla-search>
+        
+        {# Quick Search Filters #}
+        <div class="quick-search-filters mt-6">
+          <h3 class="text-lg font-bold mb-4">البحث السريع</h3>
+          <div class="filter-tags">
+            {% for category in store.categories.roots().limit(8) %}
+              <a href="{{ category.url }}" class="filter-tag">{{ category.name }}</a>
+            {% endfor %}
           </div>
+        </div>
       </div>
+    </div>
+  </div>
+
+  {# Mobile Menu Overlay #}
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay">
+    <div class="mobile-menu">
+      <div class="mobile-menu-header">
+        <h2 class="text-xl font-bold">القائمة الرئيسية</h2>
+        <button class="close-menu" onclick="closeMobileMenu()">
+          <i class="sicon-cancel"></i>
+        </button>
+      </div>
+      <nav class="mobile-menu-nav">
+        <a href="{{ link('/') }}" class="mobile-menu-item {{ is_page('index') ? 'active' : '' }}">
+          <i class="sicon-home ml-3"></i> الرئيسية
+        </a>
+        
+        {# Categories with subcategories #}
+        {% for category in store.categories.roots() %}
+          <div class="mobile-menu-category">
+            <a href="{{ category.url }}" class="mobile-menu-item">
+              <i class="sicon-category ml-3"></i> {{ category.name }}
+            </a>
+            {% if category.children|length > 0 %}
+              <div class="mobile-submenu">
+                {% for subcategory in category.children %}
+                  <a href="{{ subcategory.url }}" class="mobile-submenu-item">{{ subcategory.name }}</a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        
+        <a href="{{ link('brands') }}" class="mobile-menu-item">
+          <i class="sicon-award-ribbon ml-3"></i> الماركات
+        </a>
+        <a href="{{ link('offers') }}" class="mobile-menu-item text-red-500">
+          <i class="sicon-sale ml-3"></i> العروض
+        </a>
+        
+        {% if user.type == 'guest' %}
+          <a href="#" onclick="salla.event.dispatch('login::open')" class="mobile-menu-item">
+            <i class="sicon-user ml-3"></i> تسجيل الدخول
+          </a>
+        {% endif %}
+      </nav>
+    </div>
   </div>
 </header>
+
+<script>
+  function openSearchModal() {
+    document.getElementById('search-modal').classList.add('active');
+    document.body.classList.add('modal-open');
+    setTimeout(() => {
+      document.querySelector('#search-modal input')?.focus();
+    }, 300);
+  }
+
+  function closeSearchModal() {
+    document.getElementById('search-modal').classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function openMobileMenu() {
+    document.getElementById('mobile-menu-overlay').classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeMobileMenu() {
+    document.getElementById('mobile-menu-overlay').classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+
+  // Close modals on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeSearchModal();
+      closeMobileMenu();
+    }
+  });
+</script>
+
 {% if store.scope %}
-    <salla-scopes selection="{{ store.scope.display_as == 'popup' ? 'mandatory' : 'optional' }}"></salla-scopes>
+  <salla-scopes selection="{{ store.scope.display_as == 'popup' ? 'mandatory' : 'optional' }}"></salla-scopes>
 {% endif %}

@@ -1,132 +1,98 @@
 {% extends "layouts.master" %}
 {% block content %}
     
-    {# Hero Section with Categories Sidebar #}
-    <section class="hero-with-categories mb-8">
-        <div class="container">
-            <div class="grid grid-cols-12 gap-4">
-                {# Categories Sidebar #}
-                <div class="col-span-3 hidden lg:block">
-                    <div class="categories-sidebar bg-white rounded-lg shadow-sm p-0">
-                        <h3 class="font-bold p-4 pb-2 text-gray-800 border-b">الأقسام الرئيسية</h3>
-                        <nav class="p-2">
-                            {% for category in store.categories.roots().limit(12) %}
-                                <a href="{{ category.url }}" 
-                                   class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 rounded-md transition group">
-                                    <span class="flex items-center">
-                                        {% if category.icon %}
-                                            <i class="{{ category.icon }} ml-3 text-gray-600 group-hover:text-primary text-lg"></i>
-                                        {% else %}
-                                            <i class="sicon-category ml-3 text-gray-600 group-hover:text-primary text-lg"></i>
-                                        {% endif %}
-                                        <span class="text-gray-700 group-hover:text-primary font-medium">{{ category.name }}</span>
-                                    </span>
-                                    <i class="sicon-keyboard_arrow_left text-gray-400 group-hover:text-primary"></i>
-                                </a>
-                            {% endfor %}
-                            <a href="{{ link('categories') }}" 
-                               class="flex items-center justify-center mt-2 p-3 text-primary font-semibold hover:bg-primary/5 rounded-md">
-                                عرض جميع الأقسام
-                            </a>
-                        </nav>
-                    </div>
-                </div>
-                
-                {# Main Slider #}
-                <div class="col-span-12 lg:col-span-9">
-                    {% component 'home.enhanced-slider' %}
-                </div>
-            </div>
+    {# Hero Section with Enhanced Banner #}
+    <section class="hero-banner-section mb-0">
+        <div class="container-fluid px-0">
+            {# Main Banner Slider #}
+            {% component 'home.enhanced-slider' %}
         </div>
     </section>
 
-    {# Quick Categories Grid - Mobile & Desktop #}
-    <section class="quick-categories mb-12">
+    {# Categories Section - Right After Banner #}
+    <section class="main-categories-section py-8 bg-gray-50">
         <div class="container">
-            <h2 class="text-2xl font-bold mb-6">تسوق حسب القسم</h2>
-            <div class="category-grid">
-                {% for category in store.categories.roots().limit(18) %}
-                    <a href="{{ category.url }}" 
-                       class="category-card text-center group bg-white rounded-lg p-4 hover:shadow-md transition-all">
-                        <div class="bg-gray-50 rounded-lg p-4 mb-3 group-hover:bg-primary/5 transition">
+            <h2 class="section-title text-center mb-8">
+                <span class="text-3xl font-bold">أقسام المتجر</span>
+                <p class="text-gray-600 mt-2">تصفح منتجاتنا حسب الأقسام</p>
+            </h2>
+            
+            <div class="categories-grid">
+                {% for category in store.categories.roots().limit(12) %}
+                    <a href="{{ category.url }}" class="category-card group">
+                        <div class="category-icon">
                             {% if category.image %}
-                                <img src="{{ category.image }}" 
-                                     alt="{{ category.name }}" 
-                                     class="w-16 h-16 mx-auto object-contain">
+                                <img src="{{ category.image }}" alt="{{ category.name }}" class="w-full h-full object-cover">
                             {% else %}
-                                <i class="sicon-category text-4xl text-gray-400 group-hover:text-primary block"></i>
+                                <i class="sicon-category text-4xl text-gray-400 group-hover:text-primary"></i>
                             {% endif %}
                         </div>
-                        <span class="text-sm text-gray-700 group-hover:text-primary font-medium">{{ category.name }}</span>
+                        <h3 class="category-name">{{ category.name }}</h3>
+                        <p class="category-count">{{ category.products_count }} منتج</p>
                     </a>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-    {# Flash Deals / Today's Deals #}
-    <section class="todays-deals mb-12 bg-gradient-to-r from-red-50 to-orange-50 py-8">
-        <div class="container">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold flex items-center">
-                    <i class="sicon-flash-on text-red-500 ml-2 text-3xl animate-pulse"></i>
-                    عروض اليوم
-                    <span class="text-sm text-gray-600 font-normal mr-3">تنتهي قريباً!</span>
-                </h2>
-                <a href="{{ link('offers') }}" class="text-primary font-semibold hover:underline">
-                    عرض جميع العروض <i class="sicon-keyboard_arrow_left"></i>
-                </a>
-            </div>
-            <salla-products-slider 
-                source="offers" 
-                limit="12"
-                slides-per-view="5"
-                show-timer="true">
-            </salla-products-slider>
-        </div>
-    </section>
-
-    {# Recently Viewed Section #}
-    <section class="recently-viewed-section mb-12 hidden">
-        <div class="container">
-            <h2 class="text-2xl font-bold mb-6 flex items-center">
-                <i class="sicon-eye ml-2"></i>
-                شاهدتها مؤخراً
-            </h2>
-            <div class="recently-viewed-products products-grid">
-                {# Products will be inserted here by JavaScript #}
-            </div>
-        </div>
-    </section>
-
-    {# Categories with Products Sections #}
+    {# Enhanced Products by Category Sections #}
     {% for category in store.categories.roots().limit(5) %}
         {% if category.products().count() > 0 %}
-            <section class="category-products-section mb-12">
+            <section class="category-section py-8 {{ loop.index is odd ? 'bg-white' : 'bg-gray-50' }}">
                 <div class="container">
-                    <div class="s-block__title">
-                        <div class="right-side">
-                            <h2>{{ category.name }}</h2>
-                            <p>{{ category.description|slice(0, 100) }}...</p>
-                        </div>
-                        <a href="{{ category.url }}" class="s-block__display-all">
-                            عرض الكل
-                            <i class="sicon-keyboard_arrow_left"></i>
+                    {# Section Header #}
+                    <div class="section-header mb-6">
+                        <h2 class="section-title">
+                            <i class="{{ category.icon ?: 'sicon-category' }} text-primary ml-2"></i>
+                            {{ category.name }}
+                        </h2>
+                        
+                        {# Subcategories Filter Pills #}
+                        {% if category.children|length > 0 %}
+                            <div class="subcategory-filters mt-4">
+                                <button class="filter-pill active" data-filter="all">
+                                    جميع المنتجات
+                                </button>
+                                {% for subcategory in category.children.limit(6) %}
+                                    <button class="filter-pill" data-filter="{{ subcategory.id }}">
+                                        {{ subcategory.name }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <a href="{{ category.url }}" class="section-link">
+                            عرض الكل <i class="sicon-keyboard_arrow_left"></i>
                         </a>
                     </div>
-                    <div class="products-grid">
+
+                    {# Products Grid #}
+                    <div class="enhanced-products-grid" data-category-id="{{ category.id }}">
                         {% for product in category.products().limit(10) %}
-                            <salla-product-card 
-                                product-id="{{ product.id }}"
-                                product-title="{{ product.name }}"
-                                product-price="{{ product.price }}"
-                                product-image="{{ product.image.url }}"
-                                product-url="{{ product.url }}"
-                                show-discount="{{ product.discount ? 'true' : 'false' }}"
-                                discount-amount="{{ product.discount_amount }}"
-                                show-views-count="true"
-                                show-sold-count="true">
-                            </salla-product-card>
+                            <div class="product-card-wrapper" data-subcategory="{{ product.category_id }}">
+                                <salla-product-card 
+                                    product-id="{{ product.id }}"
+                                    product-title="{{ product.name }}"
+                                    product-price="{{ product.price }}"
+                                    product-image="{{ product.image.url }}"
+                                    product-url="{{ product.url }}"
+                                    show-discount="{{ product.discount ? 'true' : 'false' }}"
+                                    discount-amount="{{ product.discount_amount }}"
+                                    show-sold-count="true">
+                                    
+                                    {# Custom View Counter #}
+                                    <div slot="footer" class="product-stats">
+                                        <span class="views-count">
+                                            <i class="sicon-eye"></i>
+                                            <span class="view-number" data-min="50" data-max="300">{{ random(50, 300) }}</span> مشاهدة
+                                        </span>
+                                        <span class="sold-count">
+                                            <i class="sicon-shopping-bag"></i>
+                                            تم البيع <span class="sold-number" data-min="10" data-max="100">{{ random(10, 100) }}</span>
+                                        </span>
+                                    </div>
+                                </salla-product-card>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -134,43 +100,131 @@
         {% endif %}
     {% endfor %}
 
-    {# Shop by Brand #}
-    <section class="shop-by-brand mb-12 bg-gray-50 py-12">
+    {# Flash Deals Section with Timer #}
+    <section class="flash-deals-section py-12 bg-gradient-to-r from-red-50 to-orange-50">
         <div class="container">
-            <h2 class="text-2xl font-bold mb-6 text-center">تسوق حسب الماركة</h2>
-            <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4">
+            <div class="section-header mb-8">
+                <h2 class="section-title">
+                    <i class="sicon-flash-on text-red-500 animate-pulse ml-2"></i>
+                    عروض لفترة محدودة
+                </h2>
+                <div class="countdown-timer" data-end-date="{{ 'now'|date_modify('+1 day')|date('Y-m-d H:i:s') }}">
+                    <div class="timer-block">
+                        <span class="timer-value" id="hours">23</span>
+                        <span class="timer-label">ساعة</span>
+                    </div>
+                    <div class="timer-block">
+                        <span class="timer-value" id="minutes">59</span>
+                        <span class="timer-label">دقيقة</span>
+                    </div>
+                    <div class="timer-block">
+                        <span class="timer-value" id="seconds">59</span>
+                        <span class="timer-label">ثانية</span>
+                    </div>
+                </div>
+                <a href="{{ link('offers') }}" class="section-link">
+                    جميع العروض <i class="sicon-keyboard_arrow_left"></i>
+                </a>
+            </div>
+            <salla-products-slider 
+                source="offers" 
+                limit="12"
+                slides-per-view="5">
+            </salla-products-slider>
+        </div>
+    </section>
+
+    {# Recently Viewed Section #}
+    <section class="recently-viewed-section py-8 hidden">
+        <div class="container">
+            <div class="section-header mb-6">
+                <h2 class="section-title">
+                    <i class="sicon-eye ml-2"></i>
+                    شاهدتها مؤخراً
+                </h2>
+            </div>
+            <div class="recently-viewed-products enhanced-products-grid">
+                {# Products will be inserted here by JavaScript #}
+            </div>
+        </div>
+    </section>
+
+    {# Shop by Brand Enhanced #}
+    <section class="brands-section py-12 bg-gray-50">
+        <div class="container">
+            <h2 class="section-title text-center mb-8">
+                <span class="text-3xl font-bold">تسوق حسب الماركة</span>
+                <p class="text-gray-600 mt-2">أفضل الماركات العالمية والمحلية</p>
+            </h2>
+            
+            <div class="brands-grid">
                 {% for brand in store.brands.limit(16) %}
-                    <a href="{{ brand.url }}" 
-                       class="brand-card bg-white rounded-lg p-4 shadow-sm hover:shadow-lg transition text-center">
-                        {% if brand.logo %}
-                            <img src="{{ brand.logo }}" 
-                                 alt="{{ brand.name }}" 
-                                 class="w-20 h-20 object-contain mx-auto">
-                        {% else %}
-                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mx-auto">
-                                <span class="text-gray-500 font-bold text-lg">{{ brand.name[:2] }}</span>
-                            </div>
-                        {% endif %}
-                        <p class="mt-2 text-xs text-gray-600">{{ brand.name }}</p>
+                    <a href="{{ brand.url }}" class="brand-card">
+                        <div class="brand-logo">
+                            {% if brand.logo %}
+                                <img src="{{ brand.logo }}" alt="{{ brand.name }}">
+                            {% else %}
+                                <div class="brand-placeholder">{{ brand.name[:2] }}</div>
+                            {% endif %}
+                        </div>
+                        <h3 class="brand-name">{{ brand.name }}</h3>
                     </a>
                 {% endfor %}
             </div>
-            <div class="text-center mt-6">
-                <a href="{{ link('brands') }}" class="btn btn-outline-primary">
-                    عرض جميع الماركات
+            
+            <div class="text-center mt-8">
+                <a href="{{ link('brands') }}" class="btn btn-primary btn-lg">
+                    عرض جميع الماركات <i class="sicon-keyboard_arrow_left mr-2"></i>
                 </a>
             </div>
         </div>
     </section>
 
-    {# Original Home Components #}
+    {# Advanced Search Filters Section #}
+    <section class="search-filters-section py-8 bg-white">
+        <div class="container">
+            <h2 class="section-title text-center mb-6">ابحث عن ما تريد</h2>
+            <div class="advanced-search-box">
+                <div class="search-row">
+                    <select class="search-select" id="category-filter">
+                        <option value="">جميع الأقسام</option>
+                        {% for category in store.categories.roots() %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select class="search-select" id="brand-filter">
+                        <option value="">جميع الماركات</option>
+                        {% for brand in store.brands %}
+                            <option value="{{ brand.id }}">{{ brand.name }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select class="search-select" id="price-filter">
+                        <option value="">جميع الأسعار</option>
+                        <option value="0-100">0 - 100 {{ currency.symbol }}</option>
+                        <option value="100-500">100 - 500 {{ currency.symbol }}</option>
+                        <option value="500-1000">500 - 1000 {{ currency.symbol }}</option>
+                        <option value="1000+">أكثر من 1000 {{ currency.symbol }}</option>
+                    </select>
+                    
+                    <button class="search-button" onclick="applyAdvancedSearch()">
+                        <i class="sicon-search ml-2"></i>
+                        بحث متقدم
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Original Home Components (if needed) #}
     {% component 'home' %}
     
     {# Popup for View/Purchase Counter #}
-    <div id="product-views-popup" class="hidden fixed bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 z-50 animate-slideInUp">
-        <div class="flex items-center">
+    <div id="product-views-popup" class="product-views-popup hidden">
+        <div class="popup-content">
             <i class="sicon-eye text-primary ml-2"></i>
-            <span class="text-sm text-gray-700">
+            <span>
                 <strong class="viewer-count">23</strong> شخص يشاهد هذا المنتج الآن
             </span>
         </div>
@@ -181,4 +235,98 @@
 {% block scripts %}
     <script defer src="{{ 'home.js' | asset }}"></script>
     <script defer src="{{ 'recently-viewed.js' | asset }}"></script>
+    
+    <script>
+        // Subcategory Filter
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-pill');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    const section = this.closest('.category-section');
+                    const products = section.querySelectorAll('.product-card-wrapper');
+                    
+                    // Update active state
+                    section.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter products
+                    products.forEach(product => {
+                        if (filter === 'all' || product.getAttribute('data-subcategory') === filter) {
+                            product.style.display = '';
+                        } else {
+                            product.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+
+        // Countdown Timer
+        function startCountdown(endDate) {
+            const timer = setInterval(function() {
+                const now = new Date().getTime();
+                const end = new Date(endDate).getTime();
+                const distance = end - now;
+
+                                if (distance < 0) {
+                    clearInterval(timer);
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        // Start countdown if timer exists
+        const timerElement = document.querySelector('.countdown-timer');
+        if (timerElement) {
+            startCountdown(timerElement.getAttribute('data-end-date'));
+        }
+
+        // Advanced Search
+        function applyAdvancedSearch() {
+            const category = document.getElementById('category-filter').value;
+            const brand = document.getElementById('brand-filter').value;
+            const price = document.getElementById('price-filter').value;
+            
+            let url = '/products?';
+            if (category) url += `category=${category}&`;
+            if (brand) url += `brand=${brand}&`;
+            if (price) url += `price_range=${price}&`;
+            
+            window.location.href = url;
+        }
+
+        // Animate view and sold counts
+        function animateProductStats() {
+            const viewCounts = document.querySelectorAll('.view-number');
+            const soldCounts = document.querySelectorAll('.sold-number');
+            
+            viewCounts.forEach(element => {
+                const min = parseInt(element.dataset.min);
+                const max = parseInt(element.dataset.max);
+                const randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+                element.textContent = randomValue;
+            });
+            
+            soldCounts.forEach(element => {
+                const min = parseInt(element.dataset.min);
+                const max = parseInt(element.dataset.max);
+                const randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+                element.textContent = randomValue;
+            });
+        }
+
+        // Update stats periodically
+        animateProductStats();
+        setInterval(animateProductStats, 30000); // Update every 30 seconds
+    </script>
 {% endblock %}

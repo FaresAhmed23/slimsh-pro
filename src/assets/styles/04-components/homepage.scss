@@ -1,89 +1,133 @@
-// Enhanced Homepage Styles
-.hero-with-categories {
-  @apply mb-8;
+// Enhanced Homepage Styles for Slimsh-like design
 
-  .categories-sidebar {
-    @apply bg-white rounded-lg shadow-sm overflow-hidden;
-    height: fit-content;
-    max-height: 520px;
+// Section Title
+.section-title {
+  @apply text-2xl md:text-3xl font-bold text-gray-900 mb-2;
 
-    h3 {
-      @apply font-bold text-gray-800 p-4 pb-2 border-b bg-gray-50;
-      @apply sticky top-0 z-10;
-    }
-
-    nav {
-      @apply p-2;
-      overflow-y: auto;
-      max-height: 460px;
-
-      &::-webkit-scrollbar {
-        width: 4px;
-      }
-
-      &::-webkit-scrollbar-track {
-        @apply bg-gray-100 rounded;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        @apply bg-gray-300 rounded hover:bg-gray-400;
-      }
-
-      a {
-        @apply flex items-center justify-between px-4 py-3;
-        @apply hover:bg-gray-50 rounded-md transition-all;
-
-        &:hover {
-          @apply transform translate-x-1;
-        }
-
-        .sicon-keyboard_arrow_left {
-          @apply transition-transform;
-        }
-
-        &:hover .sicon-keyboard_arrow_left {
-          @apply transform translate-x-1;
-        }
-      }
-    }
+  p {
+    @apply text-base font-normal text-gray-600 mt-2;
   }
 }
 
-// Quick Categories Grid
-.quick-categories {
-  .category-card {
-    @apply bg-white rounded-lg p-4 hover:shadow-md transition-all transform hover:scale-105;
-    @apply border border-gray-100 hover:border-primary;
+// Section Header
+.section-header {
+  @apply flex flex-wrap items-center justify-between mb-8;
 
-    .bg-gray-50 {
-      @apply transition-colors;
-    }
+  .section-link {
+    @apply text-primary font-semibold hover:underline transition-all;
 
-    // Use rgba with CSS variable instead of non-existent utility
-    &:hover .bg-gray-50 {
-      background-color: rgba(var(--color-primary-rgb), 0.05);
-    }
-
-    img,
     i {
       @apply transition-transform;
     }
 
-    &:hover img,
     &:hover i {
-      @apply scale-110;
+      @apply transform translate-x-1;
     }
   }
 }
 
-// Today's Deals Section
-.todays-deals {
+// Categories Grid
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .category-card {
+    @apply bg-white rounded-lg p-4 text-center transition-all duration-300;
+    @apply hover:shadow-lg hover:transform hover:scale-105 cursor-pointer;
+    @apply border border-gray-100;
+
+    .category-icon {
+      @apply w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden;
+      @apply bg-white/50 flex items-center justify-center;
+
+      img {
+        @apply w-full h-full object-cover;
+      }
+    }
+
+    .category-name {
+      @apply font-semibold text-gray-900 mb-1;
+    }
+
+    .category-count {
+      @apply text-sm text-gray-500;
+    }
+
+    &:hover {
+      .category-icon {
+        // Use bg-primary-50 or custom CSS instead of opacity modifier
+        @apply bg-primary-50;
+      }
+
+      .category-name {
+        @apply text-primary;
+      }
+    }
+  }
+}
+
+// Enhanced Products Grid
+.enhanced-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .product-card-wrapper {
+    @apply transition-all duration-300;
+  }
+}
+
+// Product Stats
+.product-stats {
+  @apply flex items-center justify-between text-xs text-gray-600 mt-2 pt-2 border-t;
+
+  span {
+    @apply flex items-center gap-1;
+
+    i {
+      @apply text-gray-400;
+    }
+  }
+
+  .views-count {
+    @apply text-blue-600;
+  }
+
+  .sold-count {
+    @apply text-green-600;
+  }
+}
+
+// Subcategory Filters
+.subcategory-filters {
+  @apply flex flex-wrap gap-2 mt-4;
+
+  .filter-pill {
+    @apply px-4 py-2 rounded-full text-sm font-medium;
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+    @apply transition-all duration-300 cursor-pointer;
+    @apply border border-transparent;
+
+    &.active {
+      @apply bg-primary text-white;
+      @apply shadow-md transform scale-105;
+    }
+  }
+}
+
+// Flash Deals Section
+.flash-deals-section {
   @apply relative overflow-hidden;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 59, 48, 0.05) 0%,
-    rgba(255, 149, 0, 0.05) 100%
-  );
 
   &::before {
     content: "";
@@ -91,127 +135,102 @@
     background: linear-gradient(90deg, #ff3b30 0%, #ff9500 100%);
   }
 
-  h2 {
-    @apply relative;
+  .countdown-timer {
+    @apply flex items-center gap-3;
 
-    .sicon-flash-on {
-      @apply animate-pulse;
-    }
-  }
+    .timer-block {
+      @apply bg-white rounded-lg px-3 py-2 text-center shadow-sm;
 
-  // Deal timer styles
-  .deal-timer {
-    @apply flex items-center gap-2 text-sm;
-
-    .timer-box {
-      @apply bg-white rounded px-2 py-1 font-bold text-red-600 shadow-sm;
-    }
-  }
-}
-
-// Recently Viewed Section
-.recently-viewed-section {
-  @apply transition-opacity duration-500;
-
-  &.hidden {
-    @apply opacity-0 pointer-events-none;
-  }
-
-  &.has-products {
-    @apply opacity-100 pointer-events-auto;
-  }
-
-  .recently-viewed-item {
-    @apply bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all;
-
-    img {
-      @apply transition-transform duration-300;
-    }
-
-    &:hover img {
-      @apply scale-105;
-    }
-
-    h3 {
-      @apply transition-colors;
-    }
-
-    .price-wrapper {
-      @apply flex items-center justify-between;
-    }
-  }
-}
-
-// Category Products Section
-.category-products-section {
-  @apply py-8;
-
-  &:nth-child(odd) {
-    @apply bg-gray-50;
-  }
-
-  .s-block__title {
-    @apply mb-6;
-
-    h2 {
-      @apply text-2xl font-bold text-gray-900;
-    }
-
-    p {
-      @apply text-gray-600 mt-1;
-    }
-
-    .s-block__display-all {
-      @apply text-primary font-semibold hover:underline;
-
-      i {
-        @apply transition-transform;
+      .timer-value {
+        @apply block text-2xl font-bold text-red-600;
       }
 
-      &:hover i {
-        @apply transform translate-x-1;
+      .timer-label {
+        @apply text-xs text-gray-600;
       }
     }
   }
 }
 
-// Shop by Brand
-.shop-by-brand {
-  @apply bg-gray-50 py-12;
+// Brands Section
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1.5rem;
 
-  h2 {
-    @apply text-center mb-8;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 
   .brand-card {
-    @apply bg-white rounded-lg p-4 shadow-sm hover:shadow-lg;
-    @apply transition-all transform hover:scale-105;
-    @apply border border-transparent hover:border-primary;
+    @apply bg-white rounded-lg p-4 text-center transition-all duration-300;
+    @apply hover:shadow-lg hover:transform hover:scale-105 cursor-pointer;
+    @apply border border-gray-100;
 
-    img {
-      @apply filter grayscale transition-all;
-      @apply opacity-60;
+    .brand-logo {
+      @apply w-16 h-16 mx-auto mb-3 flex items-center justify-center;
+
+      img {
+        @apply w-full h-full object-contain filter grayscale;
+        @apply transition-all duration-300;
+      }
+
+      .brand-placeholder {
+        @apply w-full h-full bg-gray-100 rounded-full;
+        @apply flex items-center justify-center;
+        @apply text-xl font-bold text-gray-400;
+      }
     }
 
-    &:hover img {
-      @apply grayscale-0 opacity-100;
+    .brand-name {
+      @apply text-sm font-medium text-gray-700;
     }
 
-    p {
-      @apply text-center mt-2 text-xs text-gray-600;
-      @apply transition-colors;
-    }
+    &:hover {
+      .brand-logo img {
+        @apply filter-none;
+      }
 
-    &:hover p {
-      @apply text-primary;
+      .brand-name {
+        @apply text-primary;
+      }
+    }
+  }
+}
+
+// Advanced Search Box
+.advanced-search-box {
+  @apply bg-white/50 rounded-lg p-6;
+
+  .search-row {
+    @apply flex flex-wrap gap-3;
+
+    @media (max-width: 768px) {
+      @apply flex-col;
+    }
+  }
+
+  .search-select {
+    @apply flex-1 px-4 py-3 rounded-lg border border-gray-300;
+    @apply focus:border-primary focus:ring-2 focus:ring-primary-200;
+    @apply bg-white transition-all;
+  }
+
+  .search-button {
+    @apply px-6 py-3 bg-primary text-white rounded-lg;
+    @apply hover:bg-primary-600 transition-all;
+    @apply font-medium flex items-center justify-center;
+
+    @media (max-width: 768px) {
+      @apply w-full;
     }
   }
 }
 
 // Product Views Popup
-#product-views-popup {
+.product-views-popup {
   @apply fixed bottom-4 left-4 bg-white rounded-lg shadow-xl p-4 z-50;
-  @apply max-w-xs transform transition-all duration-300;
+  @apply transform transition-all duration-300;
 
   &.hidden {
     @apply translate-y-full opacity-0;
@@ -219,106 +238,64 @@
 
   &:not(.hidden) {
     @apply translate-y-0 opacity-100;
+    animation: slideInUp 0.5s ease-out;
   }
 
-  .sicon-eye {
-    @apply animate-pulse;
-  }
-}
+  .popup-content {
+    @apply flex items-center gap-2;
 
-// Enhanced Product Grid
-.products-grid {
-  @apply grid gap-4;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    i {
+      @apply text-primary text-xl animate-pulse;
+    }
 
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
+    span {
+      @apply text-sm text-gray-700;
 
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  }
-}
-
-// List View
-.s-products-list.list-view {
-  @apply grid grid-cols-1 gap-4;
-
-  .product-entry,
-  salla-product-card {
-    @apply bg-white rounded-lg shadow-sm p-4;
-
-    .product-content {
-      @apply flex gap-4;
-
-      .product-image {
-        @apply w-32 h-32 flex-shrink-0;
-
-        img {
-          @apply w-full h-full object-cover rounded-lg;
-        }
-      }
-
-      .product-details {
-        @apply flex-1 flex flex-col justify-between;
-
-        .product-title {
-          @apply text-lg font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors;
-        }
-
-        .product-description {
-          @apply text-gray-600 text-sm mb-3 line-clamp-2;
-        }
-
-        .product-footer {
-          @apply flex items-center justify-between;
-
-          .price-wrapper {
-            @apply flex items-center gap-2;
-          }
-
-          .product-actions {
-            @apply flex items-center gap-2;
-          }
-        }
+      strong {
+        @apply text-primary;
       }
     }
   }
 }
 
-// Responsive Adjustments
-@media (max-width: 1024px) {
-  .hero-with-categories {
-    .categories-sidebar {
-      @apply hidden;
-    }
-
-    .enhanced-slider {
-      @apply col-span-12;
-    }
-  }
-}
-
+// Responsive adjustments
 @media (max-width: 640px) {
-  .category-grid {
-    @apply grid-cols-3 gap-2;
-
-    .category-card {
-      @apply p-2;
-
-      span {
-        @apply text-xs;
-      }
-    }
-  }
-
-  .quick-categories h2,
-  .todays-deals h2,
-  .shop-by-brand h2 {
+  .section-title {
     @apply text-xl;
   }
 
-  .products-grid {
-    @apply grid-cols-2 gap-3;
+  .categories-grid .category-card {
+    @apply p-3;
+
+    .category-icon {
+      @apply w-16 h-16;
+    }
+
+    .category-name {
+      @apply text-sm;
+    }
+  }
+
+  .brands-grid .brand-card {
+    @apply p-3;
+
+    .brand-logo {
+      @apply w-12 h-12;
+    }
+  }
+}
+
+// Hero Banner
+.hero-banner-section {
+  .container-fluid {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+}
+
+// Category sections with alternating backgrounds
+.category-section {
+  &:nth-child(even) {
+    @apply bg-white/50;
   }
 }
